@@ -1,0 +1,501 @@
+============================================================
+AUTOMATON DIAGNOSTIC TEST SUITE
+============================================================
+Timestamp: 20251221_112706
+Output directory: ./diagnostics
+
+
+############################################################
+# Testing: Langton's Loop
+############################################################
+
+✓ Langton's Loop created successfully
+  Class: SimplifiedLangtonLoop
+  Grid size: (100, 100)
+  Number of states: 8
+
+------------------------------------------------------------
+Grid Details for Langton's Loop
+------------------------------------------------------------
+
+Center 10x10 section of grid:
+(showing states, 0=empty)
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+
+Pattern Analysis:
+  ⚠️  WARNING: Grid is static (no changes after step)!
+
+============================================================
+Testing Langton's Loop
+============================================================
+
+Langton's Loop - Initial State
+  Generation: 1
+  Grid Shape: (100, 100)
+  Total Cells: 10,000
+  Active Cells: 19
+  Density: 0.19%
+  Entropy: 0.021
+  Unique States: 3 (min=0, max=2)
+  State Counts:
+    State 0: 9,981 cells (99.81%)
+    State 1: 16 cells (0.16%)
+    State 2: 3 cells (0.03%)
+
+Langton's Loop - Gen 1
+  Generation: 1
+  Grid Shape: (100, 100)
+  Total Cells: 10,000
+  Active Cells: 19
+  Density: 0.19%
+  Entropy: 0.021
+  Unique States: 3 (min=0, max=2)
+  State Counts:
+    State 0: 9,981 cells (99.81%)
+    State 1: 16 cells (0.16%)
+    State 2: 3 cells (0.03%)
+
+Langton's Loop - Gen 11
+  Generation: 11
+  Grid Shape: (100, 100)
+  Total Cells: 10,000
+  Active Cells: 19
+  Density: 0.19%
+  Entropy: 0.021
+  Unique States: 3 (min=0, max=2)
+  State Counts:
+    State 0: 9,981 cells (99.81%)
+    State 1: 16 cells (0.16%)
+    State 2: 3 cells (0.03%)
+
+Langton's Loop - Gen 21
+  Generation: 21
+  Grid Shape: (100, 100)
+  Total Cells: 10,000
+  Active Cells: 19
+  Density: 0.19%
+  Entropy: 0.021
+  Unique States: 3 (min=0, max=2)
+  State Counts:
+    State 0: 9,981 cells (99.81%)
+    State 1: 16 cells (0.16%)
+    State 2: 3 cells (0.03%)
+
+Langton's Loop - Gen 31
+  Generation: 31
+  Grid Shape: (100, 100)
+  Total Cells: 10,000
+  Active Cells: 19
+  Density: 0.19%
+  Entropy: 0.021
+  Unique States: 3 (min=0, max=2)
+  State Counts:
+    State 0: 9,981 cells (99.81%)
+    State 1: 16 cells (0.16%)
+    State 2: 3 cells (0.03%)
+
+Langton's Loop - Gen 51
+  Generation: 51
+  Grid Shape: (100, 100)
+  Total Cells: 10,000
+  Active Cells: 19
+  Density: 0.19%
+  Entropy: 0.021
+  Unique States: 3 (min=0, max=2)
+  State Counts:
+    State 0: 9,981 cells (99.81%)
+    State 1: 16 cells (0.16%)
+    State 2: 3 cells (0.03%)
+
+  Visualization saved: ./diagnostics/Langton's_Loop_20251221_112706.png
+
+Behavior Analysis:
+  ~ Pattern is STABLE (0.00% density change)
+  Complexity change: +0.000 (entropy)
+  Note: 5 states never used
+
+✓ Langton's Loop test completed
+
+
+############################################################
+# Testing: Evolving Loop
+############################################################
+
+✓ Evolving Loop created successfully
+  Class: BriansBrain
+  Grid size: (100, 100)
+  Number of states: 3
+
+------------------------------------------------------------
+Grid Details for Evolving Loop
+------------------------------------------------------------
+
+Center 10x10 section of grid:
+(showing states, 0=empty)
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  1
+   0  0  0  0  0  0  0  0  0  1
+   0  0  0  0  1  1  0  0  0  0
+   1  0  0  0  0  0  0  1  0  0
+   0  0  0  0  0  0  0  0  1  0
+   0  0  0  0  0  1  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  1  0  0  0  0  0  0
+
+Pattern Analysis:
+  ✓ Grid is active: 2202 cells changed in one step
+
+============================================================
+Testing Evolving Loop
+============================================================
+
+Evolving Loop - Initial State
+  Generation: 0
+  Grid Shape: (100, 100)
+  Total Cells: 10,000
+  Active Cells: 950
+  Density: 9.50%
+  Entropy: 0.453
+  Unique States: 2 (min=0, max=1)
+  State Counts:
+    State 0: 9,050 cells (90.50%)
+    State 1: 950 cells (9.50%)
+
+Evolving Loop - Gen 0
+  Generation: 0
+  Grid Shape: (100, 100)
+  Total Cells: 10,000
+  Active Cells: 950
+  Density: 9.50%
+  Entropy: 0.453
+  Unique States: 2 (min=0, max=1)
+  State Counts:
+    State 0: 9,050 cells (90.50%)
+    State 1: 950 cells (9.50%)
+
+Evolving Loop - Gen 10
+  Generation: 10
+  Grid Shape: (100, 100)
+  Total Cells: 10,000
+  Active Cells: 1,712
+  Density: 17.12%
+  Entropy: 0.832
+  Unique States: 3 (min=0, max=2)
+  State Counts:
+    State 0: 8,288 cells (82.88%)
+    State 1: 829 cells (8.29%)
+    State 2: 883 cells (8.83%)
+
+Evolving Loop - Gen 20
+  Generation: 20
+  Grid Shape: (100, 100)
+  Total Cells: 10,000
+  Active Cells: 1,002
+  Density: 10.02%
+  Entropy: 0.570
+  Unique States: 3 (min=0, max=2)
+  State Counts:
+    State 0: 8,998 cells (89.98%)
+    State 1: 498 cells (4.98%)
+    State 2: 504 cells (5.04%)
+
+Evolving Loop - Gen 30
+  Generation: 30
+  Grid Shape: (100, 100)
+  Total Cells: 10,000
+  Active Cells: 826
+  Density: 8.26%
+  Entropy: 0.494
+  Unique States: 3 (min=0, max=2)
+  State Counts:
+    State 0: 9,174 cells (91.74%)
+    State 1: 405 cells (4.05%)
+    State 2: 421 cells (4.21%)
+
+Evolving Loop - Gen 50
+  Generation: 50
+  Grid Shape: (100, 100)
+  Total Cells: 10,000
+  Active Cells: 960
+  Density: 9.60%
+  Entropy: 0.552
+  Unique States: 3 (min=0, max=2)
+  State Counts:
+    State 0: 9,040 cells (90.40%)
+    State 1: 479 cells (4.79%)
+    State 2: 481 cells (4.81%)
+
+  Visualization saved: ./diagnostics/Evolving_Loop_20251221_112706.png
+
+Behavior Analysis:
+  ~ Pattern is STABLE (0.10% density change)
+  Complexity change: +0.099 (entropy)
+
+✓ Evolving Loop test completed
+
+
+############################################################
+# Testing: Von Neumann Constructor
+############################################################
+
+✓ Von Neumann Constructor created successfully
+  Class: GameOfLifeReplicator
+  Grid size: (120, 120)
+  Number of states: 2
+
+------------------------------------------------------------
+Grid Details for Von Neumann Constructor
+------------------------------------------------------------
+
+Center 10x10 section of grid:
+(showing states, 0=empty)
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+
+Pattern Analysis:
+  ✓ Grid is active: 33 cells changed in one step
+
+============================================================
+Testing Von Neumann Constructor
+============================================================
+
+Von Neumann Constructor - Initial State
+  Generation: 0
+  Grid Shape: (120, 120)
+  Total Cells: 14,400
+  Active Cells: 36
+  Density: 0.25%
+  Entropy: 0.025
+  Unique States: 2 (min=0, max=1)
+  State Counts:
+    State 0: 14,364 cells (99.75%)
+    State 1: 36 cells (0.25%)
+
+Von Neumann Constructor - Gen 0
+  Generation: 0
+  Grid Shape: (120, 120)
+  Total Cells: 14,400
+  Active Cells: 36
+  Density: 0.25%
+  Entropy: 0.025
+  Unique States: 2 (min=0, max=1)
+  State Counts:
+    State 0: 14,364 cells (99.75%)
+    State 1: 36 cells (0.25%)
+
+Von Neumann Constructor - Gen 10
+  Generation: 10
+  Grid Shape: (120, 120)
+  Total Cells: 14,400
+  Active Cells: 48
+  Density: 0.33%
+  Entropy: 0.032
+  Unique States: 2 (min=0, max=1)
+  State Counts:
+    State 0: 14,352 cells (99.67%)
+    State 1: 48 cells (0.33%)
+
+Von Neumann Constructor - Gen 20
+  Generation: 20
+  Grid Shape: (120, 120)
+  Total Cells: 14,400
+  Active Cells: 54
+  Density: 0.38%
+  Entropy: 0.036
+  Unique States: 2 (min=0, max=1)
+  State Counts:
+    State 0: 14,346 cells (99.62%)
+    State 1: 54 cells (0.38%)
+
+Von Neumann Constructor - Gen 30
+  Generation: 30
+  Grid Shape: (120, 120)
+  Total Cells: 14,400
+  Active Cells: 41
+  Density: 0.28%
+  Entropy: 0.028
+  Unique States: 2 (min=0, max=1)
+  State Counts:
+    State 0: 14,359 cells (99.72%)
+    State 1: 41 cells (0.28%)
+
+Von Neumann Constructor - Gen 50
+  Generation: 50
+  Grid Shape: (120, 120)
+  Total Cells: 14,400
+  Active Cells: 59
+  Density: 0.41%
+  Entropy: 0.038
+  Unique States: 2 (min=0, max=1)
+  State Counts:
+    State 0: 14,341 cells (99.59%)
+    State 1: 59 cells (0.41%)
+
+  Visualization saved: ./diagnostics/Von_Neumann_Constructor_20251221_112706.png
+
+Behavior Analysis:
+  ~ Pattern is STABLE (0.16% density change)
+  Complexity change: +0.013 (entropy)
+
+✓ Von Neumann Constructor test completed
+
+
+############################################################
+# Testing: Wire World
+############################################################
+
+✓ Wire World created successfully
+  Class: WireWorld
+  Grid size: (100, 100)
+  Number of states: 4
+
+------------------------------------------------------------
+Grid Details for Wire World
+------------------------------------------------------------
+
+Center 10x10 section of grid:
+(showing states, 0=empty)
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   0  0  0  0  0  0  0  0  0  0
+   1  1  1  1  1  1  1  1  1  1
+   0  0  0  0  0  1  0  0  0  0
+   0  0  0  0  0  1  0  0  0  0
+   0  0  0  0  0  1  0  0  0  0
+   0  0  0  0  0  1  0  0  0  0
+
+Pattern Analysis:
+  ✓ Grid is active: 7 cells changed in one step
+
+============================================================
+Testing Wire World
+============================================================
+
+Wire World - Initial State
+  Generation: 0
+  Grid Shape: (100, 100)
+  Total Cells: 10,000
+  Active Cells: 189
+  Density: 1.89%
+  Entropy: 0.138
+  Unique States: 4 (min=0, max=3)
+  State Counts:
+    State 0: 9,811 cells (98.11%)
+    State 1: 185 cells (1.85%)
+    State 2: 2 cells (0.02%)
+    State 3: 2 cells (0.02%)
+
+Wire World - Gen 0
+  Generation: 0
+  Grid Shape: (100, 100)
+  Total Cells: 10,000
+  Active Cells: 189
+  Density: 1.89%
+  Entropy: 0.138
+  Unique States: 4 (min=0, max=3)
+  State Counts:
+    State 0: 9,811 cells (98.11%)
+    State 1: 185 cells (1.85%)
+    State 2: 2 cells (0.02%)
+    State 3: 2 cells (0.02%)
+
+Wire World - Gen 10
+  Generation: 10
+  Grid Shape: (100, 100)
+  Total Cells: 10,000
+  Active Cells: 189
+  Density: 1.89%
+  Entropy: 0.146
+  Unique States: 4 (min=0, max=3)
+  State Counts:
+    State 0: 9,811 cells (98.11%)
+    State 1: 170 cells (1.70%)
+    State 2: 10 cells (0.10%)
+    State 3: 9 cells (0.09%)
+
+Wire World - Gen 20
+  Generation: 20
+  Grid Shape: (100, 100)
+  Total Cells: 10,000
+  Active Cells: 189
+  Density: 1.89%
+  Entropy: 0.152
+  Unique States: 4 (min=0, max=3)
+  State Counts:
+    State 0: 9,811 cells (98.11%)
+    State 1: 153 cells (1.53%)
+    State 2: 19 cells (0.19%)
+    State 3: 17 cells (0.17%)
+
+Wire World - Gen 30
+  Generation: 30
+  Grid Shape: (100, 100)
+  Total Cells: 10,000
+  Active Cells: 189
+  Density: 1.89%
+  Entropy: 0.156
+  Unique States: 4 (min=0, max=3)
+  State Counts:
+    State 0: 9,811 cells (98.11%)
+    State 1: 137 cells (1.37%)
+    State 2: 25 cells (0.25%)
+    State 3: 27 cells (0.27%)
+
+Wire World - Gen 50
+  Generation: 50
+  Grid Shape: (100, 100)
+  Total Cells: 10,000
+  Active Cells: 189
+  Density: 1.89%
+  Entropy: 0.163
+  Unique States: 4 (min=0, max=3)
+  State Counts:
+    State 0: 9,811 cells (98.11%)
+    State 1: 97 cells (0.97%)
+    State 2: 48 cells (0.48%)
+    State 3: 44 cells (0.44%)
+
+  Visualization saved: ./diagnostics/Wire_World_20251221_112706.png
+
+Behavior Analysis:
+  ~ Pattern is STABLE (0.00% density change)
+  Complexity change: +0.025 (entropy)
+
+✓ Wire World test completed
+
+
+============================================================
+DIAGNOSTIC SUMMARY
+============================================================
+
+Tests Passed: 4/4
+
+Individual Results:
+  ✓ PASS: LangtonLoop
+  ✓ PASS: EvolvingLoop
+  ✓ PASS: VonNeumannConstructor
+  ✓ PASS: WireWorld
+
+Output Location: ./diagnostics
+  - Visualizations: *_20251221_112706.png
+  - Text Report: diagnostic_report_20251221_112706.txt
