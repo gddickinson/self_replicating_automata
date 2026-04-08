@@ -23,19 +23,11 @@ from matplotlib.colors import ListedColormap
 from matplotlib.animation import FuncAnimation
 import time
 
-# Import the automaton classes - USING CORRECTED VERSION
-try:
-    from self_replicating_automata_corrected import (
-        LangtonLoop, EvolvingLoop, VonNeumannConstructor,
-        WireWorld, CellularAutomaton
-    )
-    print("✓ Using corrected automata implementation")
-except ImportError:
-    print("⚠ Warning: Using original automata (may not work correctly)")
-    from self_replicating_automata import (
-        LangtonLoop, EvolvingLoop, VonNeumannConstructor,
-        WireWorld, CellularAutomaton
-    )
+# Import the automaton classes
+from self_replicating_automata import (
+    LangtonLoop, EvolvingLoop, VonNeumannConstructor,
+    WireWorld, CellularAutomaton
+)
 
 
 class InteractiveAutomatonGUI:
