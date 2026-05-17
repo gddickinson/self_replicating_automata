@@ -453,3 +453,7 @@ Enjoy exploring self-replicating automata! 🔬✨
 ---
 
 *Created for George Dickinson's Lab - Bioinformatics & Cellular Automata Research*
+
+
+---
+*Built with AI assistance from [Claude (Anthropic)](https://claude.com/).*
