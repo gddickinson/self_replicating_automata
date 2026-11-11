@@ -9,6 +9,8 @@
   - `BriansBrain` -- 3-state birth/dying/dead automaton
   - Aliases: `LangtonLoop`, `EvolvingLoop`, `VonNeumannConstructor`
 
+- **`automata_colors.py`** -- `COLORMAP_COLORS`: colour list per automaton alias (pure data), used by both GUIs and the web
+
 ## GUI Frontends
 - **`automata_gui.py`** -- Tkinter + matplotlib GUI (`AutomatonGUI`)
   - Full control panel, file save, animation export
@@ -24,9 +26,35 @@
 
 ## Tests
 - **`test_automata.py`** -- Unit tests for all automaton classes (pytest)
+- **`tests/test_web.py`** -- Web API tests, static build, fixture-currency checks (inits + runs via POST /api/run), node test
+- **`tests/fixtures/engine_fixtures.json`** -- Python reference grids for the JS engine (do not edit; regenerate)
+
+## Web Interface (FastAPI + static ES-module front end; also the GitHub Pages site)
+- **`run_web.py`** -- start the local web app on 127.0.0.1:8140 (imports `web.app:app`)
+- **`requirements-web.txt`** -- pinned web/test dependencies
+- **`web/app.py`** -- FastAPI app: `/api/info`, `/api/automata`, POST `/api/run`; `STATIC_ENDPOINTS`
+- **`web/catalogue.py`** -- `AUTOMATA` (key -> class, alias, GUI labels, state names), `catalogue()`, `entry()`,
+  `colours()`, `langton_rules()`, `gosper_gun()`, `make()`, `run()`: everything read from the Python classes
+- **`web/grid_codec.py`** -- `encode()`/`decode()`: base-36 one-char-per-cell grid text (shared with the JS engine)
+- **`web/static/`** -- front end, no build step
+  - `index.html`, `style.css` (shared kit theme), `style_app.css` (accents + page styles), `core.js` (kit router/helpers)
+  - `main.js` (lazy pages, footer mode), `static_api.js` (answers `api()` from exported JSON; refuses POST /run)
+  - `automata_engine.js` -- `STEP` (one port per class's `step()`), `makeState()`, `step()`, `run()`, codec, `stats()`
+  - `automata_init.js` -- `INIT` (ports of each initialiser), `initialCells()`, `LANGTON_RULES`, `GUN`,
+    `mt19937()` + `randint()` (numpy legacy RandomState, so seeds match `np.random.seed`)
+  - `automata_engine.test.mjs` -- node test: JS == Python fixtures
+  - pages: `home.js`, `lab.js` (+ `lab_view.js` canvas/drawing, `lab_check.js` Python cross-check), `automata.js`,
+    `background.js` (README_automata.md theory), `about.js`; `bg.js` animated Brian's Brain background
+- **`scripts/build_static.py`** -- export the static site to `site/`
+- **`scripts/screenshots.py`** -- Playwright smoke test of routes + README PNGs in `docs/img/`
+- **`scripts/make_engine_fixtures.py`** -- regenerate `tests/fixtures/engine_fixtures.json`
+- **`.github/workflows/pages.yml`** -- test, build and publish the static site on push to main
+
+Data flow: `self_replicating_automata.py` classes -> `web/catalogue.py` -> `/api/*` (JSON, exported for the static
+site) -> pages; the grid itself is stepped in the browser by `automata_engine.js`, verified against the fixtures.
 
 ## Data
 - **`diagnostics/`** -- Generated diagnostic PNGs and text reports
 
 ## Dependencies
-- numpy, matplotlib (see `requirements.txt`)
+- numpy, matplotlib (see `requirements.txt`); web: `requirements-web.txt`

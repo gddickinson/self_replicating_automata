@@ -28,6 +28,7 @@ from self_replicating_automata import (
     LangtonLoop, EvolvingLoop, VonNeumannConstructor,
     WireWorld, CellularAutomaton
 )
+from automata_colors import COLORMAP_COLORS
 
 
 class InteractiveAutomatonGUI:
@@ -162,19 +163,16 @@ class InteractiveAutomatonGUI:
 
         if automaton_type == "LangtonLoop":
             self.automaton = LangtonLoop(size, size)
-            self.colormap = ListedColormap(['black', 'white', 'red', 'blue', 'yellow'])
+            self.colormap = ListedColormap(COLORMAP_COLORS['LangtonLoop'])
         elif automaton_type == "EvolvingLoop":
             self.automaton = EvolvingLoop(size, size, mutation_rate=self.mutation_rate)
-            self.colormap = ListedColormap(['black', 'white', 'red', 'orange',
-                                           'yellow', 'green', 'blue', 'purple'])
+            self.colormap = ListedColormap(COLORMAP_COLORS['EvolvingLoop'])
         elif automaton_type == "VonNeumannConstructor":
             self.automaton = VonNeumannConstructor(size, size)
-            self.colormap = ListedColormap(['black', 'gray', 'red', 'orange',
-                                           'yellow', 'green', 'blue', 'cyan',
-                                           'magenta', 'white'])
+            self.colormap = ListedColormap(COLORMAP_COLORS['VonNeumannConstructor'])
         elif automaton_type == "WireWorld":
             self.automaton = WireWorld(size, size)
-            self.colormap = ListedColormap(['black', 'yellow', 'blue', 'red'])
+            self.colormap = ListedColormap(COLORMAP_COLORS['WireWorld'])
 
     def _update_display(self):
         """Update the visualization"""
