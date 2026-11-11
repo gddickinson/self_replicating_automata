@@ -77,21 +77,22 @@ export function randomSample(next) {        // RandomState.random_sample(): 53-b
   return (a * 67108864 + b) / 9007199254740992;
 }
 
-export const MIN_SIZE = 50;   // WireWorld's branches reach 25 cells from the centre (the GUIs' smallest grid is 50)
+export const MIN_SIZE = 50;   // the GUIs' smallest grid; WireWorld (bounds-checked) also works on smaller grids
 
 const fl = n => Math.floor(n / 2);
 export const INIT = {
   // WireWorld._initialize_wire: a radius-20 circle of wire (120 angles), three 25-cell branches, two electrons
   wireworld(g, w, h) {
     const cx = fl(w), cy = fl(h), radius = 20, N = 120, stepA = (2 * Math.PI) / (N - 1);
+    const set = (x, y, v) => { if (x >= 0 && x < w && y >= 0 && y < h) g[y * w + x] = v; };   // WireWorld._set
     for (let k = 0; k < N; k++) {
       const a = k === N - 1 ? 2 * Math.PI : k * stepA;              // np.linspace(0, 2*pi, 120)
       const x = Math.trunc(cx + radius * Math.cos(a)), y = Math.trunc(cy + radius * Math.sin(a));
-      if (x >= 0 && x < w && y >= 0 && y < h) g[y * w + x] = 1;
+      set(x, y, 1);
     }
-    for (let i = 0; i < 25; i++) { g[cy * w + cx + i] = 1; g[(cy + i) * w + cx] = 1; g[cy * w + cx - i] = 1; }
-    g[(cy - radius) * w + cx] = 2; g[(cy - radius + 1) * w + cx] = 3;
-    g[cy * w + cx + 5] = 2; g[cy * w + cx + 6] = 3;
+    for (let i = 0; i < 25; i++) { set(cx + i, cy, 1); set(cx, cy + i, 1); set(cx - i, cy, 1); }
+    set(cx, cy - radius, 2); set(cx, cy - radius + 1, 3);
+    set(cx + 5, cy, 2); set(cx + 6, cy, 3);
   },
   // GameOfLifeReplicator._initialize_glider_gun
   game_of_life(g, w, h) {
@@ -117,7 +118,7 @@ export const INIT = {
 
 // The grid the Python constructor builds at this size (Brian's Brain: after np.random.seed(seed)).
 export function initialCells(key, w, h, seed = 0) {
-  if (w < MIN_SIZE || h < MIN_SIZE) throw new Error(`grids smaller than ${MIN_SIZE} x ${MIN_SIZE} are not supported`);
+  if (key !== 'wireworld' && (w < MIN_SIZE || h < MIN_SIZE)) throw new Error(`grids smaller than ${MIN_SIZE} x ${MIN_SIZE} are not supported`);
   const g = new Int32Array(w * h);
   INIT[key](g, w, h, seed);
   return g;

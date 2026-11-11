@@ -184,3 +184,25 @@ def test_docs_do_not_claim_evoloops_or_universal_construction():
     assert "Shows construction process" not in tk
     for doc in ("README.md", "GUI_GUIDE.md"):
         assert "Universal constructor demo" not in (ROOT / doc).read_text()
+
+
+# --- 5. WireWorld below 49 cells ----------------------------------------------------------------------------------
+@pytest.mark.parametrize("size", [5, 10, 20, 30, 39, 40, 45, 48, 49])
+def test_wireworld_small_grids(size):
+    """Used to raise IndexError below 49 cells (the 25-cell branches were not bounds-checked)."""
+    ww = sra.WireWorld(size, size)
+    assert np.count_nonzero(ww.grid) > 0
+    ww.step()
+    assert ww.generation == 1
+
+
+def test_wireworld_small_grid_does_not_wrap_electrons():
+    """Cells outside the grid are skipped, not wrapped round by negative indexing."""
+    ww = sra.WireWorld(30, 30)          # cy - radius = -5 would have hit row 25
+    assert ww.grid[25, 15] != 2 and ww.grid[26, 15] != 3
+
+
+def test_wireworld_unchanged_at_gui_sizes():
+    """Bounds checks must not change the pattern at the sizes the GUIs use."""
+    ww = sra.WireWorld(100, 100)
+    assert (ww.grid == 2).sum() == 2 and (ww.grid == 3).sum() == 2

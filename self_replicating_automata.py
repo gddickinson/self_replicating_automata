@@ -80,20 +80,24 @@ class WireWorld(CellularAutomaton):
         for angle in np.linspace(0, 2*np.pi, 120):
             x = int(cx + radius * np.cos(angle))
             y = int(cy + radius * np.sin(angle))
-            if 0 <= x < self.width and 0 <= y < self.height:
-                self.grid[y, x] = 1
+            self._set(y, x, 1)
 
-        # Add branching wires
+        # Add branching wires (cells outside a small grid are skipped)
         for i in range(25):
-            self.grid[cy, cx + i] = 1
-            self.grid[cy + i, cx] = 1
-            self.grid[cy, cx - i] = 1
+            self._set(cy, cx + i, 1)
+            self._set(cy + i, cx, 1)
+            self._set(cy, cx - i, 1)
 
         # Add electrons
-        self.grid[cy - radius, cx] = 2
-        self.grid[cy - radius + 1, cx] = 3
-        self.grid[cy, cx + 5] = 2
-        self.grid[cy, cx + 6] = 3
+        self._set(cy - radius, cx, 2)
+        self._set(cy - radius + 1, cx, 3)
+        self._set(cy, cx + 5, 2)
+        self._set(cy, cx + 6, 3)
+
+    def _set(self, y: int, x: int, value: int):
+        """Set a cell if it lies inside the grid (no IndexError, no negative-index wrap)"""
+        if 0 <= x < self.width and 0 <= y < self.height:
+            self.grid[y, x] = value
 
     def step(self):
         """Apply Wire World rules - CORRECT VERSION"""

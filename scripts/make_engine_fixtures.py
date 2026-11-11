@@ -45,6 +45,8 @@ def init_cases() -> list:
             combos = [(n, s) for n in BRAIN_SIZES for s in BRAIN_SEEDS]
         else:
             combos = [(n, None) for n in cat.SIZES]
+            if key == "wireworld":
+                combos = [(n, None) for n in (5, 10, 20, 30, 45)] + combos   # small grids: bounds-checked
         for n, seed in combos:
             a = cat.make(key, n, n, seed if seed is not None else 0)
             out.append({"key": key, "size": n, "seed": seed, "nonzero": sparse(a.grid)})

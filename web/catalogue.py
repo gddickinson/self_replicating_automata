@@ -120,6 +120,7 @@ def run(key: str, cells: str, width: int, height: int, steps: int, mutation_rate
         raise KeyError(key)
     if width * height * max(steps, 1) > MAX_WORK:
         raise ValueError(f"too much work: width*height*steps must be <= {MAX_WORK}")
+    # build at >= 50 cells (SimplifiedLangtonLoop's initialiser needs room), then replace the grid
     a = make(key, max(width, 50), max(height, 50), 0, mutation_rate, seed)
     grid = decode(cells, width, height)
     if grid.max(initial=0) >= a.num_states:
