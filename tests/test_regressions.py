@@ -230,3 +230,18 @@ def test_referenced_images_exist(doc):
     names = re.findall(r"\]\(([^)\s]+\.(?:png|gif))\)", text) + re.findall(r"\*\*`([^`]+\.(?:png|gif))`\*\*", text)
     for name in names:
         assert (ROOT / name).exists(), f"{doc} references missing {name}"
+
+
+# --- 7. .gitignore and no tracked .DS_Store -----------------------------------------------------------------------
+def test_gitignore_covers_junk():
+    lines = (ROOT / ".gitignore").read_text().split()
+    assert ".DS_Store" in lines and "__pycache__/" in lines and "/site/" in lines
+
+
+def test_no_tracked_ds_store():
+    import shutil
+    import subprocess
+    if not shutil.which("git") or not (ROOT / ".git").exists():
+        pytest.skip("not a git checkout")
+    tracked = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True, text=True).stdout.split("\n")
+    assert not [f for f in tracked if f.endswith(".DS_Store")]
