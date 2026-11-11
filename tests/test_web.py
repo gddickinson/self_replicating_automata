@@ -72,7 +72,7 @@ def test_catalogue_covers_every_automaton_class():
     assert {a["class"] for a in autos} == {c.__name__ for c in classes}
     for a in autos:
         assert getattr(sra, a["alias"]).__name__ == a["class"]          # aliases at the bottom of the module
-        assert len(a["colors"]) == len(a["desktop"]) == len(a["state_names"]) == a["num_states"]
+        assert len(a["colors"]) == len(a["state_names"]) == a["num_states"]
         assert "def step" in a["step_source"] and a["doc"]
 
 
@@ -132,3 +132,13 @@ def test_run_stats_match_gui_formula():
 def test_codec_round_trip():
     g = np.arange(36, dtype=np.int32).reshape(4, 9)
     assert (decode(encode(g), 9, 4) == g).all()
+
+
+def test_web_colours_match_desktop_rendering():
+    """The lab draws each state with exactly the colour the desktop GUIs' cmap/norm give it."""
+    from matplotlib.colors import to_hex
+
+    from automata_colors import colormap_and_norm
+    for a in client.get("/api/automata").json():
+        cmap, norm = colormap_and_norm(a["alias"], a["num_states"])
+        assert a["colors"] == [to_hex(cmap(norm(i))) for i in range(a["num_states"])]

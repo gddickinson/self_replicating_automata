@@ -19,7 +19,6 @@ Author: George Dickinson's Lab
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Button, Slider, RadioButtons, TextBox
-from matplotlib.colors import ListedColormap
 from matplotlib.animation import FuncAnimation
 import time
 
@@ -28,7 +27,7 @@ from self_replicating_automata import (
     LangtonLoop, EvolvingLoop, VonNeumannConstructor,
     WireWorld, CellularAutomaton
 )
-from automata_colors import COLORMAP_COLORS
+from automata_colors import colormap_and_norm
 
 
 class InteractiveAutomatonGUI:
@@ -163,16 +162,18 @@ class InteractiveAutomatonGUI:
 
         if automaton_type == "LangtonLoop":
             self.automaton = LangtonLoop(size, size)
-            self.colormap = ListedColormap(COLORMAP_COLORS['LangtonLoop'])
+            color_key = 'LangtonLoop'
         elif automaton_type == "EvolvingLoop":
             self.automaton = EvolvingLoop(size, size, mutation_rate=self.mutation_rate)
-            self.colormap = ListedColormap(COLORMAP_COLORS['EvolvingLoop'])
+            color_key = 'EvolvingLoop'
         elif automaton_type == "VonNeumannConstructor":
             self.automaton = VonNeumannConstructor(size, size)
-            self.colormap = ListedColormap(COLORMAP_COLORS['VonNeumannConstructor'])
+            color_key = 'VonNeumannConstructor'
         elif automaton_type == "WireWorld":
             self.automaton = WireWorld(size, size)
-            self.colormap = ListedColormap(COLORMAP_COLORS['WireWorld'])
+            color_key = 'WireWorld'
+
+        self.colormap, self.norm = colormap_and_norm(color_key, self.automaton.num_states)
 
     def _update_display(self):
         """Update the visualization"""
@@ -180,9 +181,8 @@ class InteractiveAutomatonGUI:
             return
 
         self.ax_main.clear()
-        self.ax_main.imshow(self.automaton.grid, cmap=self.colormap,
-                           interpolation='nearest', vmin=0,
-                           vmax=self.automaton.num_states-1)
+        self.ax_main.imshow(self.automaton.grid, cmap=self.colormap, norm=self.norm,
+                           interpolation='nearest')
         self.ax_main.set_title(f'{self.automaton.__class__.__name__} - Generation {self.automaton.generation}',
                               fontsize=12, pad=10)
         self.ax_main.axis('off')

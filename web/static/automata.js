@@ -47,8 +47,6 @@ route('automata', async () => {
       ${tags([`alias ${a.alias}`, `"${a.tk_label}" in automata_gui.py`], 'b')}</div>
     <h3>States and colours</h3>
     ${legend(a, 'colors')}
-    <p class="small mute">Desktop GUI rendering (imshow, vmin 0, vmax ${a.num_states - 1}):</p>
-    ${legend(a, 'desktop')}
     ${NOTES[a.key](a)}
     <p><a class="btn" href="#/lab/${esc(a.key)}">Open in the lab</a></p>
     <details class="src"><summary>Python source: <code>step()</code> and <code>${esc(a.init_method)}()</code></summary>

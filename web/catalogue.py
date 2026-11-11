@@ -9,21 +9,20 @@ import sys
 from pathlib import Path
 
 import numpy as np
-from matplotlib.colors import ListedColormap, Normalize, to_hex
+from matplotlib.colors import to_hex
 
 ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import self_replicating_automata as sra  # noqa: E402
-from automata_colors import COLORMAP_COLORS  # noqa: E402
+from automata_colors import COLORMAP_COLORS, state_colors  # noqa: E402
 
 from web.grid_codec import decode, encode  # noqa: E402
 
 DEFAULT_SIZE = 150                         # constructor default (width=150, height=150) and the GUIs' start value
 SIZES = list(range(50, 301, 50))           # the GUIs' grid-size slider: 50..300 in steps of 50
 MAX_WORK = 1_000_000                       # cap on width * height * steps for one /run request (pure-Python loops)
-FALLBACK = "#808080"                       # states beyond a colour list (Langton states 5-7 have no colour)
 
 # key -> class, alias (bottom of self_replicating_automata.py), labels in automata_interactive_gui.py ("interactive")
 # and automata_gui.py ("tk"), the initialiser method the constructor calls, neighbourhood used by step(), and the
@@ -52,14 +51,11 @@ def _probe(cls):
 
 
 def colours(key: str) -> dict:
-    """State colours: `colors` gives state i the i-th colour of the GUI's list (the colour key in README_automata.md);
-    `desktop` is what the desktop GUIs actually draw (imshow with vmin=0, vmax=num_states-1 rescales the list)."""
-    names = COLORMAP_COLORS[AUTOMATA[key]["alias"]]
+    """State colours: state i gets the i-th colour of the GUI's list (grey beyond it), exactly as the desktop GUIs
+    draw them (automata_colors.colormap_and_norm) and as the colour key in README_automata.md describes."""
+    alias = AUTOMATA[key]["alias"]
     n = _probe(AUTOMATA[key]["cls"]).num_states
-    cmap, norm = ListedColormap(names), Normalize(0, n - 1)
-    return {"color_names": names[:n],
-            "colors": [to_hex(names[i]) if i < len(names) else FALLBACK for i in range(n)],
-            "desktop": [to_hex(cmap(norm(i))) for i in range(n)]}
+    return {"color_names": COLORMAP_COLORS[alias][:n], "colors": [to_hex(c) for c in state_colors(alias, n)]}
 
 
 def _source(fn) -> str:

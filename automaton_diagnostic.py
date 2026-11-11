@@ -8,12 +8,12 @@ Creates visual snapshots and detailed text reports showing exactly what's happen
 
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.colors import ListedColormap
 import sys
 import os
 from datetime import datetime
 
 # Import automaton classes
+from automata_colors import colormap_and_norm
 from self_replicating_automata import (
     LangtonLoop, EvolvingLoop, VonNeumannConstructor,
     WireWorld, CellularAutomaton
@@ -123,9 +123,9 @@ class AutomatonDiagnostic:
         for idx, state_data in enumerate(captured_states):
             if idx < len(axes):
                 ax = axes[idx]
-                ax.imshow(state_data['grid'], cmap=colormap,
-                         interpolation='nearest', vmin=0,
-                         vmax=automaton.num_states-1)
+                cmap, norm = colormap_and_norm(colormap, automaton.num_states)
+                ax.imshow(state_data['grid'], cmap=cmap, norm=norm,
+                          interpolation='nearest')
                 ax.set_title(f"Gen {state_data['generation']}", fontsize=10)
                 ax.axis('off')
 
@@ -187,7 +187,7 @@ class AutomatonDiagnostic:
             automaton.generation -= 1
 
     def test_automaton(self, automaton_class, colormap, name, **kwargs):
-        """Test a specific automaton type"""
+        """Test a specific automaton type (colormap: a key of automata_colors.COLORMAP_COLORS)"""
         self.log(f"\n\n{'#'*60}")
         self.log(f"# Testing: {name}")
         self.log(f"{'#'*60}")
@@ -257,7 +257,7 @@ class AutomatonDiagnostic:
         # Test 1: Langton's Loop
         results['LangtonLoop'] = self.test_automaton(
             LangtonLoop,
-            ListedColormap(['black', 'white', 'red', 'blue', 'yellow']),
+            'LangtonLoop',
             "Langton's Loop",
             width=100,
             height=100
@@ -266,8 +266,7 @@ class AutomatonDiagnostic:
         # Test 2: Evolving Loop
         results['EvolvingLoop'] = self.test_automaton(
             EvolvingLoop,
-            ListedColormap(['black', 'white', 'red', 'orange', 'yellow',
-                           'green', 'blue', 'purple']),
+            'EvolvingLoop',
             "Evolving Loop",
             width=100,
             height=100,
@@ -277,8 +276,7 @@ class AutomatonDiagnostic:
         # Test 3: Von Neumann Constructor
         results['VonNeumannConstructor'] = self.test_automaton(
             VonNeumannConstructor,
-            ListedColormap(['black', 'gray', 'red', 'orange', 'yellow',
-                           'green', 'blue', 'cyan', 'magenta', 'white']),
+            'VonNeumannConstructor',
             "Von Neumann Constructor",
             width=120,
             height=120
@@ -287,7 +285,7 @@ class AutomatonDiagnostic:
         # Test 4: Wire World
         results['WireWorld'] = self.test_automaton(
             WireWorld,
-            ListedColormap(['black', 'yellow', 'blue', 'red']),
+            'WireWorld',
             "Wire World",
             width=100,
             height=100

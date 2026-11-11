@@ -18,7 +18,7 @@ route('about', () => {
   any grid you draw through the real Python class to compare.</p>
   <div class="callout">The classes are run exactly as written, including their simplifications (see
   <a href="#/automata">Automata</a> and <a href="#/background">Background</a>). The colours follow the lists in
-  <code>automata_colors.py</code>, shared with the desktop GUIs; the lab can also show them as the desktop GUIs draw them.</div>
+  <code>automata_colors.py</code>, shared with the desktop GUIs: state i is drawn with the i-th colour of the list.</div>
   ${isStatic() ? '<p class="static-note">You are on the static site: everything runs in your browser; only the "Check with Python" button needs the local app.</p>' : ''}
 
   <h2>Run the desktop app</h2>

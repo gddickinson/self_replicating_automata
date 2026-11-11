@@ -1,6 +1,6 @@
 // The lab: pick an automaton and a starting grid (the Python constructor's pattern at any of the desktop GUI's
 // sizes, an empty grid, or a random soup), play / pause / step, set the speed in ms per step like the desktop slider,
-// draw on the grid, switch colour schemes, and (in the local app) check against the Python class.
+// draw on the grid, and (in the local app) check against the Python class.
 import { route, api, app, esc, list, go, slider, animate, onLeave, rng } from './core.js';
 import { makeState, step, stats } from './automata_engine.js';
 import { initialCells } from './automata_init.js';
@@ -20,7 +20,6 @@ route('lab', async (args, query) => {
   let size = sizes.includes(+query.size) ? +query.size : info.default_size;
   let preset = PRESETS.some(p => p[0] === query.preset) ? query.preset : 'default';
   let seed = Number.isInteger(+query.seed) && +query.seed >= 0 ? +query.seed : 0;
-  let scheme = query.colors === 'desktop' ? 'desktop' : 'colors';
   let s = null, playing = false, speedMs = 50, brush = 1, dirty = true, density = 0.3, soupSeed = 1;
   const isBrain = a.key === 'brians_brain';
 
@@ -46,11 +45,6 @@ route('lab', async (args, query) => {
         <button id="b-reset" type="button" class="alt">Reset</button><button id="b-clear" type="button" class="alt">Clear</button>
       </div>
       <div id="speed"></div>
-      <label for="sel-colors">Colours</label>
-      <select id="sel-colors">
-        <option value="colors"${scheme === 'colors' ? ' selected' : ''}>State i = i-th colour of the GUI list</option>
-        <option value="desktop"${scheme === 'desktop' ? ' selected' : ''}>As the desktop GUIs draw them</option>
-      </select>
       <label>Draw with state</label>
       <div class="palette" id="palette" role="radiogroup" aria-label="Drawing state"></div>
       <p class="hint">Click or drag on the grid to paint; right-click or Shift-drag erases. Keys: Space play/pause, S step.</p>
@@ -75,7 +69,6 @@ route('lab', async (args, query) => {
   function url() {
     const q = new URLSearchParams({ size, preset });
     if (isBrain && preset === 'default') q.set('seed', seed);
-    if (scheme === 'desktop') q.set('colors', 'desktop');
     if (playing) q.set('play', 1);
     history.replaceState(null, '', `#/lab/${a.key}?${q}`);
   }
@@ -92,7 +85,7 @@ route('lab', async (args, query) => {
     url(); dirty = true;
   }
 
-  function colours() { return a[scheme]; }
+  function colours() { return a.colors; }
   function buildPalette() {
     const c = colours();
     view.setColors(c);
@@ -101,10 +94,8 @@ route('lab', async (args, query) => {
       title="State ${i}: ${esc(a.state_names[i])}" aria-label="State ${i}: ${esc(a.state_names[i])}">${i}</button>`);
     $('#legend').innerHTML = `<span class="mute small">States:</span>` + list(c.map((col, i) => [col, i]),
       ([col, i]) => `<span><i style="background:${esc(col)}"></i>${i} ${esc(a.state_names[i])}</span>`);
-    $('#scheme-note').textContent = scheme === 'colors'
-      ? `Colours: ${a.color_names.join(', ')} (from automata_colors.py, as the colour key in README_automata.md describes)` +
-        (a.color_names.length < a.num_states ? `; states ${a.color_names.length}-${a.num_states - 1} have no colour in the list and are grey.` : '.')
-      : 'Colours as the desktop GUIs show them: imshow(vmin=0, vmax=num_states-1) spreads the colour list over the states, so not every state gets its own colour.';
+    $('#scheme-note').textContent = `Colours: ${a.color_names.join(', ')} (automata_colors.py: the same colours the desktop GUIs draw, as the colour key in README_automata.md describes)` +
+        (a.color_names.length < a.num_states ? `; states ${a.color_names.length}-${a.num_states - 1} have no colour in the list and are grey.` : '.');
     dirty = true;
   }
   $('#palette').addEventListener('click', e => {
@@ -119,7 +110,6 @@ route('lab', async (args, query) => {
   $('#sel-preset').onchange = e => { preset = e.target.value; load(); };
   $('#sel-size').onchange = e => { size = +e.target.value; load(); };
   $('#in-seed').onchange = e => { seed = Math.max(0, Math.min(4294967295, Math.trunc(+e.target.value) || 0)); e.target.value = seed; load(); };
-  $('#sel-colors').onchange = e => { scheme = e.target.value; buildPalette(); url(); };
   const setPlaying = on => { playing = on; $('#b-play').textContent = on ? 'Pause' : 'Play'; url(); };
   const once = () => { step(s); dirty = true; };
   $('#b-play').onclick = () => setPlaying(!playing);

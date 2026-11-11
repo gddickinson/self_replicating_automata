@@ -18,7 +18,6 @@ Author: George Dickinson's Lab
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.colors import ListedColormap
 from matplotlib.figure import Figure
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
@@ -31,7 +30,7 @@ from self_replicating_automata import (
     LangtonLoop, EvolvingLoop, VonNeumannConstructor, 
     WireWorld, CellularAutomaton
 )
-from automata_colors import COLORMAP_COLORS
+from automata_colors import colormap_and_norm
 
 
 class AutomatonGUI:
@@ -237,18 +236,19 @@ class AutomatonGUI:
         
         if automaton_type == "LangtonLoop":
             self.automaton = LangtonLoop(size, size)
-            self.colormap = ListedColormap(COLORMAP_COLORS['LangtonLoop'])
+            color_key = 'LangtonLoop'
         elif automaton_type == "EvolvingLoop":
             mutation_rate = self.mutation_var.get()
             self.automaton = EvolvingLoop(size, size, mutation_rate=mutation_rate)
-            self.colormap = ListedColormap(COLORMAP_COLORS['EvolvingLoop'])
+            color_key = 'EvolvingLoop'
         elif automaton_type == "VonNeumannConstructor":
             self.automaton = VonNeumannConstructor(size, size)
-            self.colormap = ListedColormap(COLORMAP_COLORS['VonNeumannConstructor'])
+            color_key = 'VonNeumannConstructor'
         elif automaton_type == "WireWorld":
             self.automaton = WireWorld(size, size)
-            self.colormap = ListedColormap(COLORMAP_COLORS['WireWorld'])
-            
+            color_key = 'WireWorld'
+
+        self.colormap, self.norm = colormap_and_norm(color_key, self.automaton.num_states)
         self._update_statistics()
         
     def _update_display(self):
@@ -257,9 +257,8 @@ class AutomatonGUI:
             return
             
         self.ax.clear()
-        self.ax.imshow(self.automaton.grid, cmap=self.colormap, 
-                      interpolation='nearest', vmin=0, 
-                      vmax=self.automaton.num_states-1)
+        self.ax.imshow(self.automaton.grid, cmap=self.colormap, norm=self.norm,
+                           interpolation='nearest')
         self.ax.set_title(f'{self.automaton.__class__.__name__} - Generation {self.automaton.generation}',
                          fontsize=14, fontweight='bold')
         self.ax.axis('off')
@@ -408,9 +407,8 @@ class AutomatonGUI:
                 fig_temp = Figure(figsize=(8, 8))
                 ax_temp = fig_temp.add_subplot(111)
                 
-                im = ax_temp.imshow(self.automaton.grid, cmap=self.colormap,
-                                   interpolation='nearest', vmin=0,
-                                   vmax=self.automaton.num_states-1)
+                im = ax_temp.imshow(self.automaton.grid, cmap=self.colormap, norm=self.norm,
+                           interpolation='nearest')
                 ax_temp.axis('off')
                 
                 writer = PillowWriter(fps=20)

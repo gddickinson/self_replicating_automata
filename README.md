@@ -8,7 +8,7 @@ The static site is the working simulator: all four automaton classes and their s
 small JavaScript engine (`web/static/automata_engine.js`, `automata_init.js`) that node tests check, cell for cell,
 against grids computed by the Python code (every constructor pattern at grid sizes 50-300, Brian's Brain with
 `np.random.seed`, runs of up to 120 generations). The lab has play/pause/step/reset, speed in ms per step, grid size,
-drawing, starting grids and both colour schemes; the Automata and Background pages are built from the classes and
+drawing and starting grids; the Automata and Background pages are built from the classes and
 `README_automata.md`.
 
 ```bash
