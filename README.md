@@ -56,9 +56,8 @@ python automata_interactive_gui.py
 1. **`self_replicating_automata.py`** - Original simulator
    - 4 automaton types: Langton Loop (simplified loop), Evolving Loop (Brian's Brain),
      Von Neumann Constructor (Game of Life with Gosper's glider gun), Wire World
-   - Basic visualization with matplotlib
-   - Command-line interface
-   - Can be imported as a library
+   - The automaton classes (no GUI or command-line interface of its own)
+   - Imported by the GUIs; can be imported as a library
 
 2. **`automata_interactive_gui.py`** ⭐ **RECOMMENDED**
    - Interactive matplotlib-based GUI
@@ -108,10 +107,8 @@ python automata_interactive_gui.py
 
 ### Sample Outputs
 
-9. **`langton_loop_snapshot.png`** - Example output
-10. **`evolving_loop_snapshot.png`** - Example output
-11. **`von_neumann_snapshot.png`** - Example output
-12. **`wireworld_snapshot.png`** - Example output
+9. **`docs/img/`** - Screenshots of the web version (shown at the top of this file)
+10. **`diagnostics/`** - PNGs and a text report written by `automaton_diagnostic.py`
 
 ---
 

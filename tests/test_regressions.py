@@ -206,3 +206,27 @@ def test_wireworld_unchanged_at_gui_sizes():
     """Bounds checks must not change the pattern at the sizes the GUIs use."""
     ww = sra.WireWorld(100, 100)
     assert (ww.grid == 2).sum() == 2 and (ww.grid == 3).sum() == 2
+
+
+# --- 6. docs only describe code and files that exist --------------------------------------------------------------
+def test_readme_automata_has_no_phantom_api():
+    text = (ROOT / "README_automata.md").read_text()
+    assert not hasattr(sra, "AutomatonVisualizer")
+    for phantom in ("AutomatonVisualizer", "select from the menu", "option 5", "save_path"):
+        assert phantom not in text, phantom
+
+
+def test_readme_does_not_claim_a_cli():
+    """self_replicating_automata.py has no __main__ block, so no command-line interface."""
+    assert "__main__" not in (ROOT / "self_replicating_automata.py").read_text()
+    assert "Command-line interface" not in (ROOT / "README.md").read_text()
+
+
+@pytest.mark.parametrize("doc", ["README.md", "README_automata.md", "GUI_GUIDE.md"])
+def test_referenced_images_exist(doc):
+    """Markdown images and file-list entries (**`name.png`**) must point at files in the repo."""
+    import re
+    text = (ROOT / doc).read_text()
+    names = re.findall(r"\]\(([^)\s]+\.(?:png|gif))\)", text) + re.findall(r"\*\*`([^`]+\.(?:png|gif))`\*\*", text)
+    for name in names:
+        assert (ROOT / name).exists(), f"{doc} references missing {name}"

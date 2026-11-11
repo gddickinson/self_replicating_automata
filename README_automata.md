@@ -63,47 +63,39 @@ pip install numpy matplotlib
 
 ### Basic Usage
 ```bash
-python self_replicating_automata.py
+python quick_start.py               # interactive matplotlib GUI (or: python automata_interactive_gui.py)
+python automata_gui.py              # Tkinter GUI
 ```
 
-Then select from the menu:
-1. Langton's Loop
-2. Evolving Loop (with mutation)
-3. Von Neumann Constructor
-4. Wire World
-5. Compare all side-by-side
+Pick the automaton with the radio buttons, then Play / Pause / Step / Reset; sliders set the speed,
+grid size and (for the Evolving Loop / Brian's Brain) the mutation rate. `self_replicating_automata.py`
+itself is a library with no command-line interface.
 
 ### Programmatic Usage
 
 ```python
-from self_replicating_automata import LangtonLoop, AutomatonVisualizer
+import matplotlib.pyplot as plt
+from self_replicating_automata import LangtonLoop
+from automata_colors import colormap_and_norm
 
-# Create automaton
 automaton = LangtonLoop(width=150, height=150)
+for _ in range(100):
+    automaton.step()
 
-# Create visualizer
-viz = AutomatonVisualizer(automaton)
-
-# Animate
-viz.animate(frames=500, interval=50)
-
-# Or save animation
-viz.animate(frames=500, interval=50, save_path='output.gif')
-
-# Save snapshot
-viz.save_snapshot('snapshot.png')
+# Draw state i with the i-th colour of the GUI's list
+cmap, norm = colormap_and_norm('LangtonLoop', automaton.num_states)
+plt.imshow(automaton.grid, cmap=cmap, norm=norm, interpolation='nearest')
+plt.savefig('snapshot.png')
 ```
 
 ### Customization Examples
 
 ```python
-# Evolving loop with high mutation rate
+# Evolving loop (Brian's Brain) with a high, reproducible mutation rate
 from self_replicating_automata import EvolvingLoop
-automaton = EvolvingLoop(width=200, height=200, mutation_rate=0.01)
-
-# Create custom visualization
-viz = AutomatonVisualizer(automaton)
-viz.animate(frames=1000, interval=30)
+automaton = EvolvingLoop(width=200, height=200, mutation_rate=0.01, seed=42)
+for _ in range(1000):
+    automaton.step()
 ```
 
 ## Understanding the Output
@@ -191,8 +183,8 @@ class MyAutomaton(CellularAutomaton):
 
 - **Start small**: Begin with smaller grids (100x100) to see behavior clearly
 - **Increase frames**: Run longer simulations (1000+ frames) to see full replication cycles
-- **Save animations**: Use `save_path` parameter to create GIFs for presentations
-- **Compare**: Use option 5 to see all automata simultaneously
+- **Save animations**: The Tkinter GUI (`automata_gui.py`) can save an animation of the run
+- **Compare**: Switch automata with the GUI's radio buttons, or try them in the web lab
 - **Experiment**: Modify transition rules to create hybrid systems
 
 ## License
