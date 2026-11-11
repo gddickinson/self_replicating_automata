@@ -72,6 +72,11 @@ export function randint(next, n) {           // np.random.randint(0, n), n <= 2*
   return v;
 }
 
+export function randomSample(next) {        // RandomState.random_sample(): 53-bit double from two 32-bit draws
+  const a = next() >>> 5, b = next() >>> 6;
+  return (a * 67108864 + b) / 9007199254740992;
+}
+
 export const MIN_SIZE = 50;   // WireWorld's branches reach 25 cells from the centre (the GUIs' smallest grid is 50)
 
 const fl = n => Math.floor(n / 2);

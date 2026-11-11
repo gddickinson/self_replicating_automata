@@ -1,9 +1,9 @@
 // Browser engine: a pure-JS port of the four automata in self_replicating_automata.py (no DOM; runs in node too).
-// A state is { key, w, h, cells: Int32Array (row-major, cells[y * w + x]), gen }. Each step() mirrors the Python
-// class's step() exactly: toroidal wrap-around, a fresh copy of the grid as the output, and cells that no rule
+// A state is { key, w, h, cells: Int32Array (row-major, cells[y * w + x]), gen, mutation_rate, seed, rng }.
+// Each step() mirrors the Python class's step() exactly: toroidal wrap-around, a fresh copy of the grid as the output, and cells that no rule
 // touches keep their value. automata_engine.test.mjs checks it against grids produced by the Python code
 // (tests/fixtures/engine_fixtures.json).
-import { LANGTON_RULES } from './automata_init.js';
+import { LANGTON_RULES, mt19937, randint, randomSample } from './automata_init.js';
 
 // Langton rule lookup: (C, N, E, S, W) with states 0..7 -> index in base 8; -1 = no rule (cell unchanged).
 const LT = new Int8Array(8 ** 5).fill(-1);
@@ -62,13 +62,25 @@ export const STEP = {
 };
 export const KEYS = Object.keys(STEP);
 
-export function makeState(key, w, h, cells = null) {
-  return { key, w, h, cells: cells ? Int32Array.from(cells) : new Int32Array(w * h), gen: 0 };
+// opts (Brian's Brain): mutation_rate and seed, as BriansBrain(..., mutation_rate, seed); rng = RandomState(seed).
+export function makeState(key, w, h, cells = null, { mutation_rate = 0, seed = 0 } = {}) {
+  return { key, w, h, cells: cells ? Int32Array.from(cells) : new Int32Array(w * h), gen: 0,
+    mutation_rate, seed, rng: mt19937(seed) };
+}
+
+// BriansBrain._mutate: mask = random_sample(shape) < rate (row-major), then randint(0, num_states) per masked cell.
+const NUM_STATES = { brians_brain: 3 };
+function mutate(s, dst) {
+  if (!(s.mutation_rate > 0) || !NUM_STATES[s.key]) return;
+  const hit = [];
+  for (let i = 0; i < dst.length; i++) if (randomSample(s.rng) < s.mutation_rate) hit.push(i);
+  for (const i of hit) dst[i] = randint(s.rng, NUM_STATES[s.key]);
 }
 
 export function step(s) {
   const dst = Int32Array.from(s.cells);   // new_grid = self.grid.copy()
   STEP[s.key](s.cells, dst, s.w, s.h);
+  mutate(s, dst);
   s.cells = dst;
   s.gen += 1;
   return s;

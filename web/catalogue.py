@@ -103,20 +103,24 @@ def catalogue() -> list:
     return [entry(k) for k in AUTOMATA]
 
 
-def make(key: str, width: int, height: int, seed: int | None = 0):
-    """The class's own constructor at this size (numpy seeded first, for Brian's Brain's random start)."""
+def make(key: str, width: int, height: int, seed: int | None = 0, mutation_rate: float = 0.0,
+         mutation_seed: int = 0):
+    """The class's own constructor at this size (numpy seeded first, for Brian's Brain's random start; Brian's Brain
+    also takes its mutation rate and the seed of its own mutation RandomState)."""
     if seed is not None:
         np.random.seed(seed)
+    if key == "brians_brain":
+        return AUTOMATA[key]["cls"](width, height, mutation_rate=mutation_rate, seed=mutation_seed)
     return AUTOMATA[key]["cls"](width, height)
 
 
-def run(key: str, cells: str, width: int, height: int, steps: int) -> dict:
+def run(key: str, cells: str, width: int, height: int, steps: int, mutation_rate: float = 0.0, seed: int = 0) -> dict:
     """Step a grid with the real Python class and return the encoded result."""
     if key not in AUTOMATA:
         raise KeyError(key)
     if width * height * max(steps, 1) > MAX_WORK:
         raise ValueError(f"too much work: width*height*steps must be <= {MAX_WORK}")
-    a = make(key, max(width, 50), max(height, 50))   # constructors index up to 25 cells from the centre
+    a = make(key, max(width, 50), max(height, 50), 0, mutation_rate, seed)
     grid = decode(cells, width, height)
     if grid.max(initial=0) >= a.num_states:
         raise ValueError("cell state out of range for this automaton")

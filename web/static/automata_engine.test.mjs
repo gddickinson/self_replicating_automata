@@ -28,7 +28,7 @@ for (const c of fx.inits) {
 const keysSeen = new Set();
 for (const c of fx.runs) {
   keysSeen.add(c.key);
-  const s = run(makeState(c.key, c.width, c.height, decode(c.start, c.width, c.height)), c.steps);
+  const s = run(makeState(c.key, c.width, c.height, decode(c.start, c.width, c.height), c.params), c.steps);
   const d = diffCount(encode(s.cells), c.end);
   ok(d === 0, `${c.key} / ${c.label}: ${d} cells differ after ${c.steps} steps`);
   ok(s.gen === c.generation, `${c.key} / ${c.label}: generation ${s.gen} != ${c.generation}`);

@@ -107,3 +107,60 @@ def test_langton_rules_rotation_symmetric():
     rules = sra.SimplifiedLangtonLoop(50, 50).rules
     for (c, n, e, s, w), v in rules.items():
         assert rules.get((c, w, n, e, s)) == v
+
+
+# --- 3. BriansBrain.mutation_rate is used (seeded) ------------------------------------------------------------------
+def _empty_brain(rate, seed):
+    bb = sra.BriansBrain(30, 30, mutation_rate=rate, seed=seed)
+    bb.grid[:] = 0
+    return bb
+
+
+def test_brians_brain_mutations_happen():
+    """An empty grid stays empty under the rules alone; with mutations, cells appear."""
+    bb = _empty_brain(0.05, seed=1)
+    bb.step()
+    assert np.count_nonzero(bb.grid) > 0
+
+
+def test_brians_brain_mutations_seeded():
+    a, b = _empty_brain(0.02, seed=7), _empty_brain(0.02, seed=7)
+    c = _empty_brain(0.02, seed=8)
+    for _ in range(5):
+        a.step(); b.step(); c.step()
+    assert np.array_equal(a.grid, b.grid) and not np.array_equal(a.grid, c.grid)
+
+
+def test_brians_brain_mutation_rate_magnitude():
+    bb = _empty_brain(0.1, seed=3)
+    bb.step()
+    # a mutated cell gets a random state 0..2, so about rate * 2/3 of cells end up nonzero
+    assert 0.03 < np.count_nonzero(bb.grid) / bb.grid.size < 0.1
+
+
+def test_brians_brain_zero_rate_unchanged_rules():
+    np.random.seed(0)
+    a = sra.BriansBrain(30, 30)
+    np.random.seed(0)
+    b = sra.BriansBrain(30, 30, mutation_rate=0.0, seed=5)
+    for _ in range(5):
+        a.step(); b.step()
+    assert np.array_equal(a.grid, b.grid)
+
+
+@pytest.mark.parametrize("rate", [-0.1, 1.5])
+def test_brians_brain_rejects_bad_rate(rate):
+    with pytest.raises(ValueError):
+        sra.BriansBrain(30, 30, mutation_rate=rate)
+
+
+def test_interactive_gui_shows_mutation_slider_for_brians_brain():
+    import matplotlib.pyplot as plt
+    from automata_interactive_gui import InteractiveAutomatonGUI
+    gui = InteractiveAutomatonGUI()
+    gui._on_type_change("Brian's Brain")
+    assert gui.slider_mutation.ax.get_visible()
+    assert gui.automaton.mutation_rate == gui.mutation_rate
+    gui._on_type_change("Wire World")
+    assert not gui.slider_mutation.ax.get_visible()
+    plt.close(gui.fig)

@@ -17,7 +17,7 @@ Author: Corrected implementation based on proper CA rules
 import itertools
 
 import numpy as np
-from typing import Tuple, Dict
+from typing import Tuple, Dict, Optional
 
 
 class CellularAutomaton:
@@ -323,11 +323,20 @@ class BriansBrain(CellularAutomaton):
     0 - Dead
     1 - Alive
     2 - Dying
+
+    Mutations: after each step, every cell independently, with probability
+    mutation_rate, is set to a random state (0-2), drawn from a
+    numpy RandomState(seed) owned by the automaton (seed=None: unpredictable).
+    The starting pattern still uses the global np.random, as before.
     """
 
-    def __init__(self, width: int = 150, height: int = 150, mutation_rate: float = 0.0):
+    def __init__(self, width: int = 150, height: int = 150, mutation_rate: float = 0.0,
+                 seed: Optional[int] = None):
         super().__init__(width, height, num_states=3)
-        self.mutation_rate = mutation_rate  # Accept but don't use (for compatibility)
+        if not 0.0 <= mutation_rate <= 1.0:
+            raise ValueError(f"mutation_rate must be in [0, 1], got {mutation_rate}")
+        self.mutation_rate = mutation_rate
+        self.rng = np.random.RandomState(seed)
         self._initialize_random()
 
     def _initialize_random(self):
@@ -366,8 +375,16 @@ class BriansBrain(CellularAutomaton):
                 elif current == 2:  # Dying
                     new_grid[y, x] = 0  # Always dies
 
+        self._mutate(new_grid)
         self.grid = new_grid
         self.generation += 1
+
+    def _mutate(self, grid: np.ndarray):
+        """Spontaneous mutations: each cell, with probability mutation_rate, gets a random state"""
+        if self.mutation_rate <= 0:
+            return  # no random draws, so rate 0 is exactly the plain rule
+        mask = self.rng.random_sample(grid.shape) < self.mutation_rate
+        grid[mask] = self.rng.randint(0, self.num_states, size=int(mask.sum()))
 
 
 # Keep old class names for compatibility but use working versions

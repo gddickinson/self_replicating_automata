@@ -21,6 +21,7 @@ route('lab', async (args, query) => {
   let preset = PRESETS.some(p => p[0] === query.preset) ? query.preset : 'default';
   let seed = Number.isInteger(+query.seed) && +query.seed >= 0 ? +query.seed : 0;
   let s = null, playing = false, speedMs = 50, brush = 1, dirty = true, density = 0.3, soupSeed = 1;
+  let mutationRate = isFinite(+query.mutation) && query.mutation !== undefined ? Math.min(0.01, Math.max(0, +query.mutation)) : 0.001;
   const isBrain = a.key === 'brians_brain';
 
   app().innerHTML = `
@@ -34,8 +35,9 @@ route('lab', async (args, query) => {
       <label for="sel-preset">Starting grid</label>
       <select id="sel-preset">${list(PRESETS, ([k, t]) => `<option value="${k}"${k === preset ? ' selected' : ''}>${esc(t)}</option>`)}</select>
       <div id="seed-row" class="${isBrain ? '' : 'hidden'}">
-        <label for="in-seed">numpy seed (<code>np.random.seed</code>)</label>
+        <label for="in-seed">Seed (start: <code>np.random.seed</code>; mutations: <code>seed=</code>)</label>
         <input id="in-seed" type="number" min="0" max="4294967295" step="1" value="${seed}">
+        <div id="mutation"></div>
       </div>
       <div id="soup-row" class="hidden"><div id="density"></div></div>
       <label for="sel-size">Grid size (cells)</label>
@@ -68,19 +70,19 @@ route('lab', async (args, query) => {
 
   function url() {
     const q = new URLSearchParams({ size, preset });
-    if (isBrain && preset === 'default') q.set('seed', seed);
+    if (isBrain) { q.set('seed', seed); q.set('mutation', mutationRate); }
     if (playing) q.set('play', 1);
     history.replaceState(null, '', `#/lab/${a.key}?${q}`);
   }
 
   function load() {
-    if (preset === 'default') s = makeState(a.key, size, size, initialCells(a.key, size, size, seed));
-    else if (preset === 'empty') s = makeState(a.key, size, size);
+    const opts = { mutation_rate: isBrain ? mutationRate : 0, seed };
+    if (preset === 'default') s = makeState(a.key, size, size, initialCells(a.key, size, size, seed), opts);
+    else if (preset === 'empty') s = makeState(a.key, size, size, null, opts);
     else {
       const r = rng(soupSeed), n = a.num_states;
-      s = makeState(a.key, size, size, Array.from({ length: size * size }, () => (r() < density ? 1 + Math.floor(r() * (n - 1)) : 0)));
+      s = makeState(a.key, size, size, Array.from({ length: size * size }, () => (r() < density ? 1 + Math.floor(r() * (n - 1)) : 0)), opts);
     }
-    $('#seed-row').classList.toggle('hidden', !(isBrain && preset === 'default'));
     $('#soup-row').classList.toggle('hidden', preset !== 'soup');
     url(); dirty = true;
   }
@@ -115,14 +117,18 @@ route('lab', async (args, query) => {
   $('#b-play').onclick = () => setPlaying(!playing);
   $('#b-step').onclick = () => { setPlaying(false); once(); };
   $('#b-reset').onclick = () => { setPlaying(false); load(); };
-  $('#b-clear').onclick = () => { s = makeState(a.key, s.w, s.h); dirty = true; };
+  $('#b-clear').onclick = () => { s = makeState(a.key, s.w, s.h, null, { mutation_rate: s.mutation_rate, seed }); dirty = true; };
+  if (isBrain) {
+    slider($('#mutation'), { id: 'mutation', label: 'Mutation rate (per cell per step)', min: 0, max: 0.01, step: 0.0001,
+      value: mutationRate, fmt: v => v.toFixed(4) }, v => { mutationRate = v; s.mutation_rate = v; url(); });
+  }
   slider($('#speed'), { id: 'speed', label: 'Speed (ms per step)', min: 10, max: 500, step: 10, value: speedMs, unit: ' ms' }, v => { speedMs = v; });
   slider($('#density'), { id: 'density', label: 'Soup density', min: 0.05, max: 1, step: 0.05, value: density, fmt: v => v.toFixed(2) },
     v => { density = v; soupSeed++; load(); });
 
   if (query.play) playing = true;   // #/lab/<key>?play=1 starts running (shareable links, screenshots)
   $('#b-play').textContent = playing ? 'Pause' : 'Play';
-  checkPanel($('#check'), { key: a.key, state: () => s });
+  checkPanel($('#check'), { key: a.key, state: () => s, params: () => (isBrain ? { mutation_rate: s.mutation_rate, seed } : {}) });
   load(); buildPalette();
 
   // animation loop: one step per `speedMs`, at most 8 steps per frame

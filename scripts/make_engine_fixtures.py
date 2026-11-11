@@ -51,10 +51,11 @@ def init_cases() -> list:
     return out
 
 
-def run_case(key, label, grid, steps):
+def run_case(key, label, grid, steps, params=None):
     h, w = grid.shape
-    res = cat.run(key, encode(grid), w, h, steps)
-    return {"key": key, "label": label, "width": w, "height": h, "steps": steps,
+    params = params or {}
+    res = cat.run(key, encode(grid), w, h, steps, **params)
+    return {"key": key, "label": label, "width": w, "height": h, "steps": steps, "params": params,
             "start": encode(grid), "end": res["cells"], "generation": res["generation"]}
 
 
@@ -85,6 +86,11 @@ def run_cases() -> list:
     p = [0.55, 0.3, 0.15]
     for seed in (1, 2):
         cases.append(run_case("langton_loop", f"soup of states 0-2 (seed {seed})", soup(3, SOUP, SOUP, seed, p), 8))
+    a = cat.make("brians_brain", RUN_SIZE, RUN_SIZE, 0)
+    cases.append(run_case("brians_brain", "default with mutation_rate 0.01, seed 7", a.grid.copy(), 30,
+                          {"mutation_rate": 0.01, "seed": 7}))
+    cases.append(run_case("brians_brain", "empty grid, mutation_rate 0.2, seed 3", np.zeros((20, 30), np.int32), 5,
+                          {"mutation_rate": 0.2, "seed": 3}))
     for key, label, g, steps in test_patterns():
         cases.append(run_case(key, label, g, steps))
     return cases

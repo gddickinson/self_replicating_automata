@@ -108,7 +108,7 @@ def test_init_fixture_current(case):
 def test_run_reproduces_fixture(case):
     """The run fixtures still match the Python step() (through the real API)."""
     r = client.post("/api/run", json={"key": case["key"], "width": case["width"], "height": case["height"],
-                                      "cells": case["start"], "steps": case["steps"]})
+                                      "cells": case["start"], "steps": case["steps"]} | case["params"])
     assert r.status_code == 200, r.text
     out = r.json()
     assert out["cells"] == case["end"] and out["generation"] == case["generation"]

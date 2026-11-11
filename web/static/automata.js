@@ -15,9 +15,11 @@ const NOTES = {
     <details class="src"><summary>Rule table (<code>_create_rule_table</code>, ${a.rules.length} rules)</summary>
     <div class="scroll"><table class="rules"><thead><tr><th>C</th><th>N</th><th>E</th><th>S</th><th>W</th><th>→ new</th></tr></thead>
     <tbody>${list(a.rules, r => `<tr>${list(r.slice(0, 5), v => `<td>${v}</td>`)}<td><b>${r[5]}</b></td></tr>`)}</tbody></table></div></details>`,
-  brians_brain: () => `<div class="callout">The constructor accepts <code>mutation_rate</code> but, as its comment says, does
-    not use it ("Accept but don't use (for compatibility)"). The start is random: 10% of width x height random (x, y) draws set
-    alive (repeats overlap). The desktop GUIs do not seed numpy, so each reset differs; the lab exposes the seed.</div>`,
+  brians_brain: () => `<div class="callout">Mutations: after each step every cell, with probability <code>mutation_rate</code>,
+    is set to a random state (0-2), drawn from the automaton's own <code>numpy.random.RandomState(seed)</code>; the desktop GUIs
+    use a rate of 0.001 by default. The start is random: 10% of width x height random (x, y) draws from the global
+    <code>np.random</code> set alive (repeats overlap). The desktop GUIs do not seed numpy, so each reset differs; the lab exposes
+    the seed and the mutation rate.</div>`,
   game_of_life: a => `<div class="callout a">Its docstring: "Conway's Game of Life variant with a self-replicating pattern".
     The constructor writes Gosper's Glider Gun (${a.gun.cells} live cells) with its top-left corner at
     (${a.gun.origin.join(', ')}); the grid wraps around, so the gliders it emits eventually come back.</div>

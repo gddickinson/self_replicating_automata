@@ -6,7 +6,7 @@ import { makeState, run, encode } from './automata_engine.js';
 const MAX_WORK = 1_000_000;   // same cap as web/catalogue.py MAX_WORK
 
 export function checkPanel(host, ctx) {
-  // ctx: { key, state() }
+  // ctx: { key, state(), params() }  (params: Brian's Brain mutation_rate and seed)
   host.innerHTML = `<h3>Check against Python</h3>
     ${isStatic() ? needsServer('Stepping your grid through the Python class')
       : `<p class="small mute">Runs the current grid through the class's own <code>step()</code> on the server and compares
@@ -19,7 +19,7 @@ export function checkPanel(host, ctx) {
   host.querySelector('#chk-dl').onclick = () => {
     const s = ctx.state();
     download(`automaton_${ctx.key}_gen${s.gen}.json`, JSON.stringify({
-      automaton: ctx.key, width: s.w, height: s.h, generation: s.gen,
+      automaton: ctx.key, ...ctx.params(), width: s.w, height: s.h, generation: s.gen,
       encoding: 'base-36 digit per cell, row-major (grid[y][x] = cells[y * width + x])', cells: encode(s.cells),
     }), 'application/json');
   };
@@ -37,9 +37,10 @@ export function checkPanel(host, ctx) {
     out.textContent = 'Running the Python class...';
     try {
       const t0 = performance.now();
-      const py = await api('/run', { body: { key: ctx.key, width: s.w, height: s.h, cells: encode(s.cells), steps: n } });
+      const params = ctx.params();
+      const py = await api('/run', { body: { key: ctx.key, width: s.w, height: s.h, cells: encode(s.cells), steps: n, ...params } });
       const ms = performance.now() - t0;
-      const js = run(makeState(ctx.key, s.w, s.h, s.cells), n);
+      const js = run(makeState(ctx.key, s.w, s.h, s.cells, params), n);
       const a = encode(js.cells);
       let diff = 0;
       for (let i = 0; i < a.length; i++) diff += a[i] !== py.cells[i];

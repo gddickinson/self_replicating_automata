@@ -264,8 +264,8 @@ Speed: {self.speed_ms} ms
         """Handle automaton type change"""
         self.current_type = label
 
-        # Hide mutation slider (not used in corrected versions)
-        self.slider_mutation.ax.set_visible(False)
+        # Mutation slider only applies to Brian's Brain (EvolvingLoop)
+        self.slider_mutation.ax.set_visible(label == "Brian's Brain")
 
         self._reset(None)
         self.fig.canvas.draw_idle()
@@ -285,6 +285,8 @@ Speed: {self.speed_ms} ms
     def _on_mutation_change(self, val):
         """Handle mutation rate change"""
         self.mutation_rate = float(val)
+        if hasattr(self.automaton, 'mutation_rate'):
+            self.automaton.mutation_rate = self.mutation_rate
 
     def _save_snapshot(self, event):
         """Save current state"""

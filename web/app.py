@@ -48,13 +48,15 @@ class RunRequest(BaseModel):
     height: int = Field(gt=0, le=300)
     cells: str
     steps: int = Field(ge=0, le=5000)
+    mutation_rate: float = Field(0.0, ge=0, le=1)   # Brian's Brain only
+    seed: int = Field(0, ge=0, le=2**32 - 1)        # Brian's Brain mutation RandomState seed
 
 
 @app.post("/api/run")
 def run(req: RunRequest):
     """Step a grid N times with the real Python class (used to cross-check the browser engine)."""
     try:
-        return cat.run(req.key, req.cells, req.width, req.height, req.steps)
+        return cat.run(req.key, req.cells, req.width, req.height, req.steps, req.mutation_rate, req.seed)
     except KeyError:
         raise HTTPException(404, f"unknown automaton {req.key}") from None
     except ValueError as e:
