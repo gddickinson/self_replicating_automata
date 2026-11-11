@@ -49,3 +49,16 @@ One commit per fix, each with regression tests in `tests/test_regressions.py` th
   WireWorld init); fixtures regenerated (29 initial grids incl. WireWorld 5-45, 15 run cases incl. mutations);
   `/api/run` takes `mutation_rate`/`seed`; lab has a mutation slider. CI now runs `pytest tests test_automata.py`.
 - Note: `diagnostics/` still holds the 2025-12-21 report/PNGs made with the old rules and colours.
+
+## 2026-11-11 -- Langton's published loop replaces the reduced-rule loop (approved by George)
+- New `langton_rules.py`: the 219 published rules (CNESWC'), cited (Langton, Physica D 10, 1984; table as in
+  Golly's `Langtons-Loops.rule`, from H. Sayama's `loops.java`), the standard initial loop, and
+  `build_rule_table()` (rotate4; 857 distinct neighbourhoods, no conflicts).
+- `LangtonsLoop` replaces the reduced/generalised rules entirely (no variant kept); `LangtonLoop` and
+  `SimplifiedLangtonLoop` are aliases of it. Loop placed at the grid centre. Colours: Sayama/Golly's 8 colours.
+  Interactive GUI label "Simple Loop" -> "Langton's Loop".
+- Tests (`tests/test_langton_loop.py`): 219 rules, rotation symmetry, 85-cell standard loop, one loop until the
+  daughter forms and two ~86-cell loops at generation 151, and no unmatched neighbourhood in 151 generations.
+- Web: `web/static/langton_table.js` (same table, same rotation order), init ported, fixtures regenerated (adds a
+  70x70 run to generation 151), catalogue/automata/background/home text and README_automata, README, GUI_GUIDE,
+  ROADMAP (219-rule item ticked), INTERFACE updated; screenshots refreshed (lab_langton_loop shows both loops).

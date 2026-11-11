@@ -31,7 +31,7 @@ def info():
     return {
         "title": "Self-Replicating Automata",
         "automata": len(autos), "max_states": max(a["num_states"] for a in autos),
-        "langton_rules": len(cat.langton_rules()), "gun_cells": cat.gosper_gun()["cells"],
+        "langton_rules": len(cat.LANGTON_RULES_CNESWC), "gun_cells": cat.gosper_gun()["cells"],
         "sizes": cat.SIZES, "default_size": cat.DEFAULT_SIZE,
     }
 

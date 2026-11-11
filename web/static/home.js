@@ -19,7 +19,7 @@ route('home', async () => {
   <div class="tiles">
     <div class="tile"><b>${info.automata}</b><span>automaton classes</span></div>
     <div class="tile"><b>${info.max_states}</b><span>states in the largest (the loop)</span></div>
-    <div class="tile"><b>${info.langton_rules}</b><span>rules in the simplified Langton table</span></div>
+    <div class="tile"><b>${info.langton_rules}</b><span>rules in Langton's published table</span></div>
     <div class="tile"><b>${info.gun_cells}</b><span>live cells in the Gosper glider gun</span></div>
     <div class="tile"><b>${info.sizes[0]}–${info.sizes.at(-1)}</b><span>grid sizes (as the desktop slider)</span></div>
   </div>

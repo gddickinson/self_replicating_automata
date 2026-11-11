@@ -19,9 +19,9 @@ python scripts/build_static.py            # export the static site to site/
 python scripts/make_engine_fixtures.py    # regenerate tests/fixtures/engine_fixtures.json
 ```
 
-| Home | Lab (Game of Life) | Lab (Wire World) | Lab (Simple Loop) | Automata |
+| Home | Lab (Game of Life) | Lab (Wire World) | Lab (Langton's Loop) | Automata |
 |---|---|---|---|---|
-| ![Home](docs/img/home.png) | ![Lab](docs/img/lab_game_of_life.png) | ![Wire World](docs/img/lab_wireworld.png) | ![Simple Loop](docs/img/lab_langton_loop.png) | ![Automata](docs/img/automata.png) |
+| ![Home](docs/img/home.png) | ![Lab](docs/img/lab_game_of_life.png) | ![Wire World](docs/img/lab_wireworld.png) | ![Langton's Loop](docs/img/lab_langton_loop.png) | ![Automata](docs/img/automata.png) |
 
 ---
 
@@ -54,7 +54,7 @@ python automata_interactive_gui.py
 ### Core Scripts
 
 1. **`self_replicating_automata.py`** - Original simulator
-   - 4 automaton types: Langton Loop (simplified loop), Evolving Loop (Brian's Brain),
+   - 4 automaton types: Langton's Loop (the 1984 published rules), Evolving Loop (Brian's Brain),
      Von Neumann Constructor (Game of Life with Gosper's glider gun), Wire World
    - The automaton classes (no GUI or command-line interface of its own)
    - Imported by the GUIs; can be imported as a library
@@ -121,7 +121,7 @@ python quick_start.py
 
 ### 2. Select Automaton Type
 Click on the radio buttons:
-- **Langton Loop** - Simplified loop that grows sheathed arms
+- **Langton's Loop** - Langton's 1984 self-reproducing loop (daughter loop by generation 151)
 - **Evolving Loop** - Brian's Brain, with optional mutations (adjust rate with slider)
 - **Von Neumann** - Game of Life with Gosper's glider gun (named after the universal constructor)
 - **Wire World** - Signal propagation

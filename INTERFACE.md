@@ -5,10 +5,13 @@
   - `CellularAutomaton` -- Base class (grid, step, neighborhood helpers)
   - `WireWorld` -- 4-state wire/electron simulation
   - `GameOfLifeReplicator` -- Conway's Life with Gosper glider gun
-  - `SimplifiedLangtonLoop` -- Reduced-rule Langton loop (12 hand-written rules generalised by `_generalised_rule`)
+  - `LangtonsLoop` -- Langton's 1984 self-reproducing loop (published 219-rule table, standard loop)
+  - Aliases: `LangtonLoop` and `SimplifiedLangtonLoop` = `LangtonsLoop`, `EvolvingLoop` = `BriansBrain`,
+    `VonNeumannConstructor` = `GameOfLifeReplicator`
   - `BriansBrain` -- 3-state birth/dying/dead automaton; `mutation_rate` + `seed` (own RandomState), `_mutate()`
-  - Aliases: `LangtonLoop`, `EvolvingLoop`, `VonNeumannConstructor`
 
+- **`langton_rules.py`** -- `LANGTON_RULES_CNESWC` (the 219 published rules, cited), `LANGTON_INITIAL_LOOP`,
+  `build_rule_table()` (all four rotations); pure data, mirrored by `web/static/langton_table.js`
 - **`automata_colors.py`** -- `COLORMAP_COLORS` (colour list per alias), `state_colors()`, `colormap_and_norm()`
   (ListedColormap + BoundaryNorm so state i is drawn with colour i); used by both GUIs, the diagnostic and the web
 
@@ -27,6 +30,7 @@
 
 ## Tests
 - **`test_automata.py`** -- Unit tests for all automaton classes (pytest)
+- **`tests/test_langton_loop.py`** -- Langton's loop: 219 rules, rotations, standard loop, daughter by gen 151
 - **`tests/test_regressions.py`** -- Regression tests for the fixed bugs (GUI colours, Langton loop, mutations,
   small WireWorld grids, docs, .gitignore)
 - **`tests/test_web.py`** -- Web API tests, static build, fixture-currency checks (inits + runs via POST /api/run), node test
@@ -43,6 +47,7 @@
   - `index.html`, `style.css` (shared kit theme), `style_app.css` (accents + page styles), `core.js` (kit router/helpers)
   - `main.js` (lazy pages, footer mode), `static_api.js` (answers `api()` from exported JSON; refuses POST /run)
   - `automata_engine.js` -- `STEP` (one port per class's `step()`), Brian's Brain mutations, `makeState()`, `step()`, `run()`, codec, `stats()`
+  - `langton_table.js` -- the 219 published Langton rules, the initial loop, `LANGTON_RULES` (rotations)
   - `automata_init.js` -- `INIT` (ports of each initialiser), `initialCells()`, `LANGTON_RULES`, `GUN`,
     `mt19937()` + `randint()` + `randomSample()` (numpy legacy RandomState, so seeds match Python)
   - `automata_engine.test.mjs` -- node test: JS == Python fixtures

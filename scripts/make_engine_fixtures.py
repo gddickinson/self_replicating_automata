@@ -3,7 +3,7 @@
 * "inits": each class's constructor grid at every lab size (the GUIs' 50..300 slider values), stored sparsely;
   Brian's Brain after np.random.seed(seed) for a few seeds.
 * "runs": start grids and the grids the real Python step() reaches after N steps: every constructor default,
-  a seeded random soup over all of the automaton's states, a Langton soup dense in the states its rules use,
+  a seeded random soup over all of the automaton's states, Langton's loop through to its daughter loop (151 steps), Langton soups of states 0-2,
   and the small patterns from test_automata.py.
 * "rules" / "gun": the Langton rule table and the Gosper gun as read from the Python objects.
 
@@ -85,6 +85,8 @@ def run_cases() -> list:
         cases.append(run_case(key, f"constructor default {RUN_SIZE}x{RUN_SIZE}", a.grid.copy(), RUN_STEPS[key]))
         cases.append(run_case(key, "random soup, all states", soup(entry["num_states"], SOUP, SOUP, 100 + i),
                               SOUP_STEPS))
+    a = cat.make("langton_loop", 70, 70, 0)
+    cases.append(run_case("langton_loop", "standard loop 70x70 to generation 151 (daughter loop)", a.grid.copy(), 151))
     p = [0.55, 0.3, 0.15]
     for seed in (1, 2):
         cases.append(run_case("langton_loop", f"soup of states 0-2 (seed {seed})", soup(3, SOUP, SOUP, seed, p), 8))

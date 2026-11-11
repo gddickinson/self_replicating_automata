@@ -17,6 +17,7 @@ if str(ROOT) not in sys.path:
 
 import self_replicating_automata as sra  # noqa: E402
 from automata_colors import COLORMAP_COLORS, state_colors  # noqa: E402
+from langton_rules import LANGTON_INITIAL_LOOP, LANGTON_RULES_CNESWC  # noqa: E402
 
 from web.grid_codec import decode, encode  # noqa: E402
 
@@ -28,10 +29,10 @@ MAX_WORK = 1_000_000                       # cap on width * height * steps for o
 # and automata_gui.py ("tk"), the initialiser method the constructor calls, neighbourhood used by step(), and the
 # state meanings given in the class docstrings / code comments.
 AUTOMATA = {
-    "langton_loop": dict(cls=sra.SimplifiedLangtonLoop, alias="LangtonLoop", interactive="Simple Loop",
+    "langton_loop": dict(cls=sra.LangtonsLoop, alias="LangtonLoop", interactive="Langton's Loop",
                          tk="Langton's Loop", init="_initialize_loop", neighbourhood="von Neumann (4 neighbours)",
-                         states=["background", "sheath", "core/data", "signal / constructor", "signal / constructor",
-                                 "signal / constructor", "signal / constructor", "signal / constructor"]),
+                         states=["background", "core", "sheath", "signal / construction", "signal / construction",
+                                 "signal / construction", "signal / construction", "signal / construction"]),
     "brians_brain": dict(cls=sra.BriansBrain, alias="EvolvingLoop", interactive="Brian's Brain",
                          tk="Evolving Loop (Brian's Brain)", init="_initialize_random", neighbourhood="Moore (8 neighbours)",
                          states=["dead", "alive", "dying"]),
@@ -63,8 +64,8 @@ def _source(fn) -> str:
 
 
 def langton_rules() -> list:
-    """The SimplifiedLangtonLoop rule table as [C, N, E, S, W, new] rows, in definition order."""
-    return [[int(v) for v in k] + [int(new)] for k, new in _probe(sra.SimplifiedLangtonLoop).rules.items()]
+    """LangtonsLoop's rule table (the published rules in all four rotations) as [C, N, E, S, W, new] rows."""
+    return [[int(v) for v in k] + [int(new)] for k, new in _probe(sra.LangtonsLoop).rules.items()]
 
 
 def gosper_gun() -> dict:
@@ -92,6 +93,8 @@ def entry(key: str) -> dict:
     }
     if key == "langton_loop":
         out["rules"] = langton_rules()
+        out["published_rules"] = list(LANGTON_RULES_CNESWC)
+        out["initial_loop"] = list(LANGTON_INITIAL_LOOP)
         out["rules_source"] = _source(cls._create_rule_table)
     if key == "game_of_life":
         out["gun"] = gosper_gun()
@@ -120,7 +123,7 @@ def run(key: str, cells: str, width: int, height: int, steps: int, mutation_rate
         raise KeyError(key)
     if width * height * max(steps, 1) > MAX_WORK:
         raise ValueError(f"too much work: width*height*steps must be <= {MAX_WORK}")
-    # build at >= 50 cells (SimplifiedLangtonLoop's initialiser needs room), then replace the grid
+    # build at >= 50 cells (as the GUIs do), then replace the grid
     a = make(key, max(width, 50), max(height, 50), 0, mutation_rate, seed)
     grid = decode(cells, width, height)
     if grid.max(initial=0) >= a.num_states:

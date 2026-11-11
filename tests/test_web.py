@@ -88,7 +88,7 @@ def test_gui_labels_are_the_guis_own():
 def test_info_counts():
     info = client.get("/api/info").json()
     assert info["automata"] == 4 and info["max_states"] == 8
-    assert info["langton_rules"] == len(sra.SimplifiedLangtonLoop(50, 50).rules)
+    assert info["langton_rules"] == 219
     assert info["gun_cells"] == int(sra.GameOfLifeReplicator(50, 50).grid.sum())
 
 

@@ -22,8 +22,8 @@ file with class aliases at the bottom for backward compatibility.
 - [x] Add `requirements.txt` or `pyproject.toml`
 
 ## Feature Enhancements
-- [ ] Implement a true Langton Loop with the full 219-rule transition table
-      (current `SimplifiedLangtonLoop` is an approximation)
+- [x] Implement a true Langton Loop with the full 219-rule transition table
+      (`LangtonsLoop`, rules in `langton_rules.py`; replaced the reduced-rule approximation)
 - [ ] Add rule-table import from RLE/Golly format so users can load community
       patterns
 - [ ] Support saving/loading simulation state (grid + generation) as `.npz`

@@ -23,17 +23,18 @@ This predates and parallels the discovery of DNA's dual role!
 ## Implementations in This Simulator
 
 The GUIs reach the classes through aliases at the bottom of `self_replicating_automata.py`:
-`LangtonLoop` = `SimplifiedLangtonLoop`, `EvolvingLoop` = `BriansBrain`,
-`VonNeumannConstructor` = `GameOfLifeReplicator`. The names describe the ideas that inspired them;
-the classes are simpler stand-ins, as described below.
+`LangtonLoop` = `LangtonsLoop` (also still importable as `SimplifiedLangtonLoop`), `EvolvingLoop` =
+`BriansBrain`, `VonNeumannConstructor` = `GameOfLifeReplicator`. Langton's loop is the real thing; the other
+two names describe the ideas that inspired them, and those classes are simpler stand-ins, as described below.
 
-### 1. Langton's Loop (`LangtonLoop` = `SimplifiedLangtonLoop`)
-- Inspired by Langton's self-replicating loop, a simplified version of von Neumann's idea (8 states;
-  published in 1984, 40 years after von Neumann's work)
-- This class: 8 states declared, 0-2 used (background, sheath, data), with a reduced rule table
-  (12 hand-written rules, generalised to every neighbour arrangement, plus an arm-opening rule)
-- A closed sheath loop lets its data out as sheathed "arms" that branch and spread; it does not
-  build a complete copy of itself (the full 219-rule Langton table is future work in ROADMAP.md)
+### 1. Langton's Loop (`LangtonLoop` = `LangtonsLoop`)
+- Langton's self-reproducing loop, a simplified version of von Neumann's idea (C. G. Langton,
+  "Self-reproduction in cellular automata", Physica D 10, 135-144, 1984; 40 years after von Neumann's work)
+- This class: 8 states, von Neumann neighbourhood, the published 219-rule table applied in all four
+  rotations, and the standard initial loop (`langton_rules.py`, which cites its source: Golly's
+  `Langtons-Loops.rule`, from H. Sayama's `loops.java`)
+- Signals circulating in the loop's core extend an arm that turns three times and closes into a
+  daughter loop; by generation 151 there are two loops, and the colony keeps growing
 
 ### 2. Evolving Loop (`EvolvingLoop` = `BriansBrain`, i.e. Brian's Brain)
 - The name refers to Sayama's evoloops (1999), loops that undergo Darwinian evolution through
@@ -103,10 +104,10 @@ for _ in range(1000):
 State i is drawn with the i-th colour of the lists in `automata_colors.py`.
 
 ### Langton's Loop
-- **White**: Structure/sheath (state 1)
-- **Red**: Core/data (state 2)
-- (Blue and yellow are reserved for states 3 and 4, which the current rules never produce)
-- Watch for: data leaving the loop as sheathed arms that branch
+Colours of Sayama's loops.java / Golly: 0 black (background), 1 blue (core), 2 red (sheath),
+3 green, 4 yellow, 5 magenta, 6 white, 7 cyan (signal and construction states).
+- Watch for: the 7-0 and 4-0 signals circulating, the arm growing and turning, the daughter loop
+  detaching around generation 151
 
 ### Evolving Loop (Brian's Brain)
 - **White**: Alive (state 1)

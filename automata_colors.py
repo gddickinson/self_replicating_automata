@@ -6,7 +6,8 @@ reads them for the browser lab. Pure data: no matplotlib or GUI imports.
 """
 
 COLORMAP_COLORS = {
-    "LangtonLoop": ['black', 'white', 'red', 'blue', 'yellow'],
+    # Langton's loop: the colours of Sayama's loops.java / Golly's Langtons-Loops.rule (states 0-7)
+    "LangtonLoop": ['black', 'blue', 'red', 'lime', 'yellow', 'magenta', 'white', 'cyan'],
     "EvolvingLoop": ['black', 'white', 'red', 'orange',
                      'yellow', 'green', 'blue', 'purple'],
     "VonNeumannConstructor": ['black', 'gray', 'red', 'orange',
@@ -15,7 +16,7 @@ COLORMAP_COLORS = {
     "WireWorld": ['black', 'yellow', 'blue', 'red'],
 }
 
-FALLBACK = "#808080"   # grey for states beyond a colour list (e.g. LangtonLoop states 5-7)
+FALLBACK = "#808080"   # grey for states beyond a colour list
 
 
 def state_colors(alias: str, num_states: int) -> list:

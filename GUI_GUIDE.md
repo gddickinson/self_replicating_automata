@@ -102,8 +102,8 @@ python automata_interactive_gui.py
 ```
 
 ### Step 2: Select Automaton Type
-- Click on the radio buttons to choose (the interactive GUI labels them Simple Loop, Brian's Brain, Game of Life, Wire World):
-  - **Langton Loop**: Simplified Langton-style loop that grows sheathed arms
+- Click on the radio buttons to choose (the interactive GUI labels them Langton's Loop, Brian's Brain, Game of Life, Wire World):
+  - **Langton Loop**: Langton's 1984 self-reproducing loop (published 219-rule table)
   - **Evolving Loop**: Brian's Brain, with optional mutations (adjustable rate)
   - **Von Neumann**: Game of Life with Gosper's glider gun (named after the universal constructor)
   - **Wire World**: Signal propagation system

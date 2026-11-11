@@ -40,7 +40,7 @@ export const STEP = {
       if (src[i] === 1) { if (n < 2 || n > 3) dst[i] = 0; } else if (n === 3) dst[i] = 1;
     }
   },
-  // SimplifiedLangtonLoop.step: look up (center, north, east, south, west) in the rule table; no match = unchanged.
+  // LangtonsLoop.step: look up (center, north, east, south, west) in the rule table; no match = unchanged.
   langton_loop(src, dst, w, h) {
     for (let y = 0; y < h; y++) {
       const yn = ((y - 1 + h) % h) * w, ys = ((y + 1) % h) * w, yc = y * w;

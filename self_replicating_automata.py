@@ -6,7 +6,7 @@ This version implements ACTUAL transition rules for the automata,
 not simplified approximations.
 
 Implementations:
-1. Langton's Self-Replicating Loop (actual rule table)
+1. Langton's Self-Reproducing Loop (published 219-rule table, 1984)
 2. Wire World (correct implementation)
 3. Game of Life variant
 4. Simple demo replicator
@@ -14,10 +14,10 @@ Implementations:
 Author: Corrected implementation based on proper CA rules
 """
 
-import itertools
-
 import numpy as np
 from typing import Tuple, Dict, Optional
+
+from langton_rules import LANGTON_INITIAL_LOOP, build_rule_table
 
 
 class CellularAutomaton:
@@ -200,14 +200,21 @@ class GameOfLifeReplicator(CellularAutomaton):
         self.generation += 1
 
 
-class SimplifiedLangtonLoop(CellularAutomaton):
+class LangtonsLoop(CellularAutomaton):
     """
-    Simplified Langton Loop with working rule table
-    Based on actual Langton Loop transition rules (reduced set)
+    Langton's self-reproducing loop (C. G. Langton, Physica D 10, 1984)
+    8 states, von Neumann neighbourhood, the published 219-rule table in all four rotations
 
-    Uses states 0-2 (background, sheath, data). From the default loop the data
-    leaves through the sheath and grows sheathed arms that branch and spread;
-    the loop does not build a copy of itself.
+    The standard initial loop sits at the grid centre. Signals circulating in its
+    core extend an arm that turns three times, closes into a daughter loop and
+    detaches; by generation 151 there are two loops. Rule table and loop:
+    langton_rules.py (with its source).
+
+    States:
+    0 - Background
+    1 - Core (the path the signals travel)
+    2 - Sheath
+    3-7 - Signal and construction states (7-0 and 4-0 pairs are the instructions)
     """
 
     def __init__(self, width: int = 150, height: int = 150):
@@ -216,93 +223,27 @@ class SimplifiedLangtonLoop(CellularAutomaton):
         self._initialize_loop()
 
     def _create_rule_table(self):
-        """Create Langton Loop rule table (simplified version that works)"""
-        # This is a lookup table: (center, north, east, south, west) -> new_state
-        # Using a simplified working subset of Langton's rules
-        self.rules = {}
-
-        # Format: (C, N, E, S, W) -> new_state
-        # State 0: background
-        # State 1: sheath
-        # State 2: core/data
-        # State 3-7: signals and constructors
-
-        # Key rules for loop extension and replication
-        self.rules[(0, 1, 1, 1, 0)] = 1  # Extend sheath
-        self.rules[(0, 1, 1, 0, 1)] = 1
-        self.rules[(0, 1, 0, 1, 1)] = 1
-        self.rules[(0, 0, 1, 1, 1)] = 1
-
-        # Signal propagation
-        self.rules[(2, 2, 0, 0, 0)] = 2
-        self.rules[(2, 0, 2, 0, 0)] = 2
-        self.rules[(2, 0, 0, 2, 0)] = 2
-        self.rules[(2, 0, 0, 0, 2)] = 2
-
-        # Growth signals
-        self.rules[(0, 2, 1, 0, 0)] = 1
-        self.rules[(0, 0, 2, 1, 0)] = 1
-        self.rules[(0, 0, 0, 2, 1)] = 1
-        self.rules[(0, 1, 0, 0, 2)] = 1
-
-        # The 12 rules above never match the default loop (a closed sheath ring with
-        # the data inside), so it never changed. Generalise each family to every
-        # arrangement of its neighbours (states 0-2, like Langton's rotation-symmetric
-        # table) and let the data leave through the sheath to grow an arm:
-        #   extend sheath: 0 with three sheath neighbours, one empty  -> 1
-        #   growth:        0 with one data and one sheath neighbour   -> 1 (wraps the arm)
-        #   propagation:   0 with one data neighbour, rest empty      -> 2 (arm tip advances)
-        #   arm opening:   sheath with one data neighbour and empty
-        #                  space opposite it                          -> 2 (data crosses the wall)
-        # Existing entries keep their values; new ones follow in (C, N, E, S, W) order.
-        for key in itertools.product(range(3), repeat=5):
-            new_state = self._generalised_rule(key[0], key[1:])
-            if new_state is not None:
-                self.rules.setdefault(key, new_state)
-
-    @staticmethod
-    def _generalised_rule(center: int, nbrs: Tuple[int, ...]):
-        """New state for the generalised rule families, or None if none applies"""
-        sheath, data = nbrs.count(1), nbrs.count(2)
-        if center == 0 and data == 0 and sheath == 3:
-            return 1
-        if center == 0 and data == 1 and sheath == 1:
-            return 1
-        if center == 0 and data == 1 and sheath == 0:
-            return 2
-        if center == 2 and data == 1 and sheath == 0:
-            return 2
-        if center == 1 and data == 1 and nbrs[(nbrs.index(2) + 2) % 4] == 0:
-            return 2
-        return None
+        """(C, N, E, S, W) -> new state; no entry leaves the cell unchanged"""
+        self.rules = build_rule_table()
 
     def _initialize_loop(self):
-        """Create initial loop structure"""
-        cx, cy = self.width // 4, self.height // 4
-
-        # Create a working loop pattern
-        # Outer loop
-        for i in range(5):
-            self.grid[cy, cx + i] = 1
-            self.grid[cy + 4, cx + i] = 1
-            self.grid[cy + i, cx] = 1
-            self.grid[cy + i, cx + 4] = 1
-
-        # Core data
-        self.grid[cy + 2, cx + 2] = 2
-        self.grid[cy + 1, cx + 2] = 2
-        self.grid[cy + 3, cx + 2] = 2
+        """Place the standard initial loop (10 x 14 cells) at the centre; cells off the grid are skipped"""
+        y0 = self.height // 2 - len(LANGTON_INITIAL_LOOP) // 2
+        x0 = self.width // 2 - 7
+        for dy, row in enumerate(LANGTON_INITIAL_LOOP):
+            for dx, ch in enumerate(row):
+                y, x = y0 + dy, x0 + dx
+                if ch != ' ' and 0 <= y < self.height and 0 <= x < self.width:
+                    self.grid[y, x] = int(ch)
 
     def step(self):
-        """Apply simplified Langton Loop rules"""
+        """Apply Langton's rule table to every cell (von Neumann neighbourhood, wrap-around edges)"""
         new_grid = self.grid.copy()
         h, w = self.grid.shape
 
         for y in range(h):
             for x in range(w):
                 neighbors = self.get_neighborhood(x, y)
-
-                # Create tuple key
                 key = (
                     neighbors['center'],
                     neighbors['north'],
@@ -310,8 +251,6 @@ class SimplifiedLangtonLoop(CellularAutomaton):
                     neighbors['south'],
                     neighbors['west']
                 )
-
-                # Apply rule if it exists
                 if key in self.rules:
                     new_grid[y, x] = self.rules[key]
 
@@ -392,6 +331,7 @@ class BriansBrain(CellularAutomaton):
 
 
 # Keep old class names for compatibility but use working versions
-LangtonLoop = SimplifiedLangtonLoop
+LangtonLoop = LangtonsLoop
+SimplifiedLangtonLoop = LangtonsLoop  # former reduced-rule loop, replaced by Langton's published table
 EvolvingLoop = BriansBrain  # Use Brian's Brain as a working evolving pattern
 VonNeumannConstructor = GameOfLifeReplicator  # Use Life as constructor demo

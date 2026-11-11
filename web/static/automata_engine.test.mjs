@@ -12,7 +12,7 @@ const ok = (cond, msg) => { checks++; if (!cond) { fails++; console.error('FAIL'
 const diffCount = (a, b) => { let d = 0; for (let i = 0; i < a.length; i++) d += a[i] !== b[i]; return d; };
 
 // 1. constants copied from the Python source
-ok(JSON.stringify(LANGTON_RULES) === JSON.stringify(fx.rules), 'Langton rule table matches SimplifiedLangtonLoop.rules');
+ok(JSON.stringify(LANGTON_RULES) === JSON.stringify(fx.rules), 'Langton rule table matches LangtonsLoop.rules');
 ok(JSON.stringify(GUN) === JSON.stringify(fx.gun.rows) && fx.gun.origin.join() === '10,10', 'Gosper gun matches the Python grid');
 
 // 2. every constructor grid at every lab size (Brian's Brain: numpy-seeded)

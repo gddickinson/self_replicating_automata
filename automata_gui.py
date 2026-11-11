@@ -444,7 +444,7 @@ class AutomatonGUI:
 
 Select an automaton type and click Play to watch self-replication in action!
 
-• Langton's Loop: Simplified loop that grows sheathed arms
+• Langton's Loop: Langton's 1984 self-reproducing loop
 • Evolving Loop: Brian's Brain, with optional mutations
 • Von Neumann Constructor: Game of Life with Gosper's glider gun
 • Wire World: Signal propagation

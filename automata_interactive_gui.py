@@ -76,7 +76,7 @@ class InteractiveAutomatonGUI:
         ax_radio = plt.axes([0.02, 0.70, 0.15, 0.18])
         ax_radio.set_title('Automaton Type', fontsize=10, fontweight='bold')
         self.radio = RadioButtons(ax_radio,
-                                  ('Simple Loop', "Brian's Brain",
+                                  ("Langton's Loop", "Brian's Brain",
                                    'Game of Life', 'Wire World'),
                                   active=0)
         self.radio.on_clicked(self._on_type_change)
@@ -151,7 +151,7 @@ class InteractiveAutomatonGUI:
     def _create_automaton(self):
         """Create new automaton based on current selection"""
         type_map = {
-            'Simple Loop': 'LangtonLoop',
+            "Langton's Loop": 'LangtonLoop',
             "Brian's Brain": 'EvolvingLoop',
             'Game of Life': 'VonNeumannConstructor',
             'Wire World': 'WireWorld'

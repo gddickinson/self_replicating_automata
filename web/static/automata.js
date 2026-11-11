@@ -6,13 +6,15 @@ const legend = (a, key) => `<div class="legend">${list(a[key].map((c, i) => [c, 
   ([c, i]) => `<span><i style="background:${esc(c)}"></i>${i} ${esc(a.state_names[i])}</span>`)}</div>`;
 
 const NOTES = {
-  langton_loop: a => `<div class="callout">The class docstring calls this a "Simplified Langton Loop with working rule table".
-    Its table starts with 12 hand-written rules (extend sheath, signal propagation, growth signals) and generalises each family
-    to every arrangement of neighbours over states 0-2, plus an "arm opening" rule: a sheath cell with one data neighbour and
-    empty space opposite becomes data. From the default loop the data leaves through the sheath, north and south, as arms
-    wrapped in sheath that then branch and spread. ${a.rules.length} rules in all; a cell whose (centre, north, east, south,
-    west) neighbourhood matches no rule keeps its state, and states 3-7 are never produced.</div>
-    <details class="src"><summary>Rule table (<code>_create_rule_table</code>, ${a.rules.length} rules)</summary>
+  langton_loop: a => `<div class="callout a">Langton's self-reproducing loop (C. G. Langton, "Self-reproduction in cellular
+    automata", <i>Physica D</i> 10, 1984): 8 states, von Neumann neighbourhood, and the published table of
+    ${a.published_rules.length} rules, each applied in all four rotations (${a.rules.length} distinct neighbourhoods); a
+    neighbourhood with no rule leaves the cell unchanged. The table is the one distributed with Golly
+    (<code>Langtons-Loops.rule</code>, from H. Sayama's <code>loops.java</code>). Signals circulating in the core (7-0 and
+    4-0 pairs) extend an arm that turns three times and closes into a daughter loop: by generation 151 there are two
+    loops, and the colony keeps growing.</div>
+    <h3>Standard initial loop</h3><pre class="gun">${esc(a.initial_loop.join('\n'))}</pre>
+    <details class="src"><summary>Rule table (${a.published_rules.length} published rules, CNESW → new; shown with rotations)</summary>
     <div class="scroll"><table class="rules"><thead><tr><th>C</th><th>N</th><th>E</th><th>S</th><th>W</th><th>→ new</th></tr></thead>
     <tbody>${list(a.rules, r => `<tr>${list(r.slice(0, 5), v => `<td>${v}</td>`)}<td><b>${r[5]}</b></td></tr>`)}</tbody></table></div></details>`,
   brians_brain: () => `<div class="callout">Mutations: after each step every cell, with probability <code>mutation_rate</code>,
