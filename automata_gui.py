@@ -96,8 +96,8 @@ class AutomatonGUI:
         self.automaton_var = tk.StringVar(value="LangtonLoop")
         automaton_types = [
             ("Langton's Loop", "LangtonLoop"),
-            ("Evolving Loop", "EvolvingLoop"),
-            ("Von Neumann Constructor", "VonNeumannConstructor"),
+            ("Evolving Loop (Brian's Brain)", "EvolvingLoop"),
+            ("Von Neumann Constructor (Game of Life)", "VonNeumannConstructor"),
             ("Wire World", "WireWorld")
         ]
         
@@ -444,9 +444,9 @@ class AutomatonGUI:
 
 Select an automaton type and click Play to watch self-replication in action!
 
-• Langton's Loop: Simplified self-replicator
-• Evolving Loop: Includes mutations
-• Von Neumann Constructor: Shows construction process
+• Langton's Loop: Simplified loop that grows sheathed arms
+• Evolving Loop: Brian's Brain, with optional mutations
+• Von Neumann Constructor: Game of Life with Gosper's glider gun
 • Wire World: Signal propagation
 
 Use the controls to adjust speed, step through, or reset."""

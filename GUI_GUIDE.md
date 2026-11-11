@@ -102,10 +102,10 @@ python automata_interactive_gui.py
 ```
 
 ### Step 2: Select Automaton Type
-- Click on the radio buttons to choose:
-  - **Langton Loop**: Classic self-replicating loop
-  - **Evolving Loop**: Loop with mutations (adjustable rate)
-  - **Von Neumann**: Universal constructor demonstration  
+- Click on the radio buttons to choose (the interactive GUI labels them Simple Loop, Brian's Brain, Game of Life, Wire World):
+  - **Langton Loop**: Simplified Langton-style loop that grows sheathed arms
+  - **Evolving Loop**: Brian's Brain, with optional mutations (adjustable rate)
+  - **Von Neumann**: Game of Life with Gosper's glider gun (named after the universal constructor)
   - **Wire World**: Signal propagation system
 
 ### Step 3: Control the Simulation
@@ -117,7 +117,7 @@ python automata_interactive_gui.py
 ### Step 4: Adjust Parameters
 - **Speed slider**: Control update rate (10-500 ms)
 - **Grid Size slider**: Change grid dimensions (50-300)
-- **Mutation Rate slider**: Adjust evolution speed (Evolving Loop only)
+- **Mutation Rate slider**: Chance per cell per step of a random state (Evolving Loop / Brian's Brain only)
 
 ### Step 5: Monitor Statistics
 The statistics panel shows:

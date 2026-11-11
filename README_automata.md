@@ -22,27 +22,31 @@ This predates and parallels the discovery of DNA's dual role!
 
 ## Implementations in This Simulator
 
-### 1. Langton's Self-Replicating Loop
-- **Simplified version** of von Neumann's idea (uses only 8 states)
-- Creates a closed loop that extends an "arm" to replicate
-- Much more practical than original 29-state system
-- **Historical note**: Published in 1984, 40 years after von Neumann's work
+The GUIs reach the classes through aliases at the bottom of `self_replicating_automata.py`:
+`LangtonLoop` = `SimplifiedLangtonLoop`, `EvolvingLoop` = `BriansBrain`,
+`VonNeumannConstructor` = `GameOfLifeReplicator`. The names describe the ideas that inspired them;
+the classes are simpler stand-ins, as described below.
 
-### 2. Evolving Loop (Evoloops)
-- Based on Sayama's 1999 breakthrough
-- Can undergo **Darwinian evolution** through:
-  - Spontaneous mutations
-  - Natural selection
-  - Inheritable variation
-- First CA system to demonstrate true evolution of self-reproducing organisms
+### 1. Langton's Loop (`LangtonLoop` = `SimplifiedLangtonLoop`)
+- Inspired by Langton's self-replicating loop, a simplified version of von Neumann's idea (8 states;
+  published in 1984, 40 years after von Neumann's work)
+- This class: 8 states declared, 0-2 used (background, sheath, data), with a reduced rule table
+  (12 hand-written rules, generalised to every neighbour arrangement, plus an arm-opening rule)
+- A closed sheath loop lets its data out as sheathed "arms" that branch and spread; it does not
+  build a complete copy of itself (the full 219-rule Langton table is future work in ROADMAP.md)
 
-### 3. Von Neumann Universal Constructor
-- Simplified demonstration of universal construction principles
-- Shows:
-  - Instruction tape (genome)
-  - Construction arm
-  - Signal propagation
-  - Pattern assembly
+### 2. Evolving Loop (`EvolvingLoop` = `BriansBrain`, i.e. Brian's Brain)
+- The name refers to Sayama's evoloops (1999), loops that undergo Darwinian evolution through
+  mutation, selection and inheritable variation
+- This class is Brian's Brain: 3 states (dead, alive, dying); a dead cell with exactly 2 alive
+  neighbours is born, alive cells start dying, dying cells die
+- Optional spontaneous mutations: each step, every cell with probability `mutation_rate` gets a
+  random state (seeded by `seed`). There are no loops, inheritance or selection
+
+### 3. Von Neumann Constructor (`VonNeumannConstructor` = `GameOfLifeReplicator`, i.e. Game of Life)
+- The name refers to von Neumann's universal constructor (instruction tape, construction arm)
+- This class is Conway's Game of Life starting from Gosper's glider gun, a pattern that keeps
+  building and emitting new gliders; there is no instruction tape or construction arm
 
 ### 4. Wire World
 - Not a replicator, but demonstrates **signal propagation**
@@ -104,23 +108,22 @@ viz.animate(frames=1000, interval=30)
 
 ## Understanding the Output
 
+State i is drawn with the i-th colour of the lists in `automata_colors.py`.
+
 ### Langton's Loop
-- **White**: Structure/sheath
-- **Red**: Core/genetic information
-- **Blue**: Growing arm
-- **Yellow**: Signal carriers
-- Watch for: Loop extending arm, arm forming new loop
+- **White**: Structure/sheath (state 1)
+- **Red**: Core/data (state 2)
+- (Blue and yellow are reserved for states 3 and 4, which the current rules never produce)
+- Watch for: data leaving the loop as sheathed arms that branch
 
-### Evolving Loop
-- **Multiple colors**: Different genetic variants
-- **Mutations**: Color changes indicate genetic variation
-- Watch for: Loops of different sizes, faster/slower replicators
+### Evolving Loop (Brian's Brain)
+- **White**: Alive (state 1)
+- **Red**: Dying (state 2)
+- Watch for: travelling patterns; with a mutation rate, spontaneous new cells
 
-### Von Neumann Constructor
-- **Gray**: Structural elements
-- **Red/Orange/Yellow**: Different instructions on tape
-- **Blue/Cyan**: Signals and construction arm
-- Watch for: Arm reading tape, extending based on instructions
+### Von Neumann Constructor (Game of Life)
+- **Gray**: Alive (state 1)
+- Watch for: the glider gun emitting gliders, which wrap around the grid
 
 ### Wire World
 - **Yellow**: Wire/conductor

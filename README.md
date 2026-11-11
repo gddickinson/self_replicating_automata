@@ -54,7 +54,8 @@ python automata_interactive_gui.py
 ### Core Scripts
 
 1. **`self_replicating_automata.py`** - Original simulator
-   - 4 automaton types: Langton Loop, Evolving Loop, Von Neumann, Wire World
+   - 4 automaton types: Langton Loop (simplified loop), Evolving Loop (Brian's Brain),
+     Von Neumann Constructor (Game of Life with Gosper's glider gun), Wire World
    - Basic visualization with matplotlib
    - Command-line interface
    - Can be imported as a library
@@ -123,9 +124,9 @@ python quick_start.py
 
 ### 2. Select Automaton Type
 Click on the radio buttons:
-- **Langton Loop** - Classic self-replicator
-- **Evolving Loop** - With mutations (adjust rate with slider)
-- **Von Neumann** - Universal constructor demo
+- **Langton Loop** - Simplified loop that grows sheathed arms
+- **Evolving Loop** - Brian's Brain, with optional mutations (adjust rate with slider)
+- **Von Neumann** - Game of Life with Gosper's glider gun (named after the universal constructor)
 - **Wire World** - Signal propagation
 
 ### 3. Control the Simulation

@@ -164,3 +164,23 @@ def test_interactive_gui_shows_mutation_slider_for_brians_brain():
     gui._on_type_change("Wire World")
     assert not gui.slider_mutation.ax.get_visible()
     plt.close(gui.fig)
+
+
+# --- 4. docs say what the EvolvingLoop / VonNeumannConstructor aliases really are --------------------------------
+ALIAS_DOCS = ["README.md", "README_automata.md", "GUI_GUIDE.md", "automata_gui.py"]
+
+
+@pytest.mark.parametrize("doc", ALIAS_DOCS)
+def test_docs_name_the_real_automata_behind_aliases(doc):
+    text = (ROOT / doc).read_text()
+    assert "Brian's Brain" in text and "Game of Life" in text, doc
+
+
+def test_docs_do_not_claim_evoloops_or_universal_construction():
+    text = (ROOT / "README_automata.md").read_text()
+    assert "First CA system to demonstrate true evolution of self-reproducing organisms" not in text
+    assert "Simplified demonstration of universal construction principles" not in text
+    tk = (ROOT / "automata_gui.py").read_text()
+    assert "Shows construction process" not in tk
+    for doc in ("README.md", "GUI_GUIDE.md"):
+        assert "Universal constructor demo" not in (ROOT / doc).read_text()

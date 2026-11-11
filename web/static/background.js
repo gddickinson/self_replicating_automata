@@ -37,7 +37,7 @@ route('background', () => {
       <tr><td>Evolving loop (evoloops)</td><td>Based on Sayama's 1999 work: loops that can undergo Darwinian evolution
         through mutation, selection and inheritable variation.</td>
         <td><a href="#/lab/brians_brain"><code>BriansBrain</code></a>, aliased as <code>EvolvingLoop</code> ("Use Brian's
-        Brain as a working evolving pattern"); it has no mutation or loops.</td></tr>
+        Brain as a working evolving pattern"), with optional random mutations; it has no loops, inheritance or selection.</td></tr>
       <tr><td>Von Neumann universal constructor</td><td>A simplified demonstration of universal construction: instruction
         tape, construction arm, signal propagation, pattern assembly.</td>
         <td><a href="#/lab/game_of_life"><code>GameOfLifeReplicator</code></a>, aliased as
