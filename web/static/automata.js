@@ -6,14 +6,15 @@ const legend = (a, key) => `<div class="legend">${list(a[key].map((c, i) => [c, 
   ([c, i]) => `<span><i style="background:${esc(c)}"></i>${i} ${esc(a.state_names[i])}</span>`)}</div>`;
 
 const NOTES = {
-  langton_loop: a => `<div class="callout">The class docstring calls this a "Simplified Langton Loop with working rule table";
-    its rule table holds ${a.rules.length} rules, and a cell whose (centre, north, east, south, west) neighbourhood matches no
-    rule keeps its state. In the repo's own diagnostics report (<code>diagnostics/diagnostic_report_20251221_112706.txt</code>)
-    the default loop is flagged "Grid is static (no changes after step)": none of its neighbourhoods match a rule. Random soups
-    of states 0-2 do trigger the rules; try "Random soup" in the lab.</div>
-    <h3>Rule table (<code>_create_rule_table</code>)</h3>
+  langton_loop: a => `<div class="callout">The class docstring calls this a "Simplified Langton Loop with working rule table".
+    Its table starts with 12 hand-written rules (extend sheath, signal propagation, growth signals) and generalises each family
+    to every arrangement of neighbours over states 0-2, plus an "arm opening" rule: a sheath cell with one data neighbour and
+    empty space opposite becomes data. From the default loop the data leaves through the sheath, north and south, as arms
+    wrapped in sheath that then branch and spread. ${a.rules.length} rules in all; a cell whose (centre, north, east, south,
+    west) neighbourhood matches no rule keeps its state, and states 3-7 are never produced.</div>
+    <details class="src"><summary>Rule table (<code>_create_rule_table</code>, ${a.rules.length} rules)</summary>
     <div class="scroll"><table class="rules"><thead><tr><th>C</th><th>N</th><th>E</th><th>S</th><th>W</th><th>→ new</th></tr></thead>
-    <tbody>${list(a.rules, r => `<tr>${list(r.slice(0, 5), v => `<td>${v}</td>`)}<td><b>${r[5]}</b></td></tr>`)}</tbody></table></div>`,
+    <tbody>${list(a.rules, r => `<tr>${list(r.slice(0, 5), v => `<td>${v}</td>`)}<td><b>${r[5]}</b></td></tr>`)}</tbody></table></div></details>`,
   brians_brain: () => `<div class="callout">The constructor accepts <code>mutation_rate</code> but, as its comment says, does
     not use it ("Accept but don't use (for compatibility)"). The start is random: 10% of width x height random (x, y) draws set
     alive (repeats overlap). The desktop GUIs do not seed numpy, so each reset differs; the lab exposes the seed.</div>`,

@@ -72,3 +72,38 @@ def test_tk_gui_colours_state_i_is_colour_i():
             _assert_image_colours(app.ax.images[-1], alias, n)
     finally:
         root.destroy()
+
+
+# --- 2. SimplifiedLangtonLoop: the default loop evolves -----------------------------------------------------------
+def test_langton_default_loop_evolves():
+    """Before the fix none of the 12 rules matched any neighbourhood of the default loop, so it never changed."""
+    ll = sra.SimplifiedLangtonLoop(50, 50)
+    for t in range(12):
+        before = ll.grid.copy()
+        ll.step()
+        assert not np.array_equal(before, ll.grid), f"grid did not change at step {t + 1}"
+    assert ll.grid.max() <= 2
+
+
+def test_langton_loop_extends_sheathed_arm():
+    """The data (2) leaves the loop through the sheath and is wrapped in sheath (1) as it grows (an 'arm')."""
+    ll = sra.SimplifiedLangtonLoop(50, 50)
+    cx, cy = 50 // 4, 50 // 4
+    for _ in range(3):
+        ll.step()
+    assert ll.grid[cy - 2, cx + 2] == 2 and ll.grid[cy - 1, cx + 1] == 1 and ll.grid[cy - 1, cx + 3] == 1
+
+
+def test_langton_keeps_original_rules():
+    """The 12 hand-written rules are still in the table with their original results."""
+    original = {(0, 1, 1, 1, 0): 1, (0, 1, 1, 0, 1): 1, (0, 1, 0, 1, 1): 1, (0, 0, 1, 1, 1): 1,
+                (2, 2, 0, 0, 0): 2, (2, 0, 2, 0, 0): 2, (2, 0, 0, 2, 0): 2, (2, 0, 0, 0, 2): 2,
+                (0, 2, 1, 0, 0): 1, (0, 0, 2, 1, 0): 1, (0, 0, 0, 2, 1): 1, (0, 1, 0, 0, 2): 1}
+    rules = sra.SimplifiedLangtonLoop(50, 50).rules
+    assert all(rules.get(k) == v for k, v in original.items())
+
+
+def test_langton_rules_rotation_symmetric():
+    rules = sra.SimplifiedLangtonLoop(50, 50).rules
+    for (c, n, e, s, w), v in rules.items():
+        assert rules.get((c, w, n, e, s)) == v

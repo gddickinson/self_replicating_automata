@@ -14,6 +14,8 @@ Implementations:
 Author: Corrected implementation based on proper CA rules
 """
 
+import itertools
+
 import numpy as np
 from typing import Tuple, Dict
 
@@ -198,6 +200,10 @@ class SimplifiedLangtonLoop(CellularAutomaton):
     """
     Simplified Langton Loop with working rule table
     Based on actual Langton Loop transition rules (reduced set)
+
+    Uses states 0-2 (background, sheath, data). From the default loop the data
+    leaves through the sheath and grows sheathed arms that branch and spread;
+    the loop does not build a copy of itself.
     """
 
     def __init__(self, width: int = 150, height: int = 150):
@@ -234,6 +240,37 @@ class SimplifiedLangtonLoop(CellularAutomaton):
         self.rules[(0, 0, 2, 1, 0)] = 1
         self.rules[(0, 0, 0, 2, 1)] = 1
         self.rules[(0, 1, 0, 0, 2)] = 1
+
+        # The 12 rules above never match the default loop (a closed sheath ring with
+        # the data inside), so it never changed. Generalise each family to every
+        # arrangement of its neighbours (states 0-2, like Langton's rotation-symmetric
+        # table) and let the data leave through the sheath to grow an arm:
+        #   extend sheath: 0 with three sheath neighbours, one empty  -> 1
+        #   growth:        0 with one data and one sheath neighbour   -> 1 (wraps the arm)
+        #   propagation:   0 with one data neighbour, rest empty      -> 2 (arm tip advances)
+        #   arm opening:   sheath with one data neighbour and empty
+        #                  space opposite it                          -> 2 (data crosses the wall)
+        # Existing entries keep their values; new ones follow in (C, N, E, S, W) order.
+        for key in itertools.product(range(3), repeat=5):
+            new_state = self._generalised_rule(key[0], key[1:])
+            if new_state is not None:
+                self.rules.setdefault(key, new_state)
+
+    @staticmethod
+    def _generalised_rule(center: int, nbrs: Tuple[int, ...]):
+        """New state for the generalised rule families, or None if none applies"""
+        sheath, data = nbrs.count(1), nbrs.count(2)
+        if center == 0 and data == 0 and sheath == 3:
+            return 1
+        if center == 0 and data == 1 and sheath == 1:
+            return 1
+        if center == 0 and data == 1 and sheath == 0:
+            return 2
+        if center == 2 and data == 1 and sheath == 0:
+            return 2
+        if center == 1 and data == 1 and nbrs[(nbrs.index(2) + 2) % 4] == 0:
+            return 2
+        return None
 
     def _initialize_loop(self):
         """Create initial loop structure"""

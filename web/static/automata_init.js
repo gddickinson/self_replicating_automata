@@ -1,14 +1,33 @@
 // Starting grids: JS ports of each class's initialiser in self_replicating_automata.py, plus numpy's legacy random
 // generator (MT19937 + RandomState.randint) so Brian's Brain's random start matches `np.random.seed(seed);
-// BriansBrain(w, h)` exactly. The constants (Langton rule table, Gosper gun) are copied from the Python source;
+// BriansBrain(w, h)` exactly. The Langton rule table and the Gosper gun follow the Python source;
 // automata_engine.test.mjs checks them, and every initialiser at every lab size, against the Python fixtures.
 
-// SimplifiedLangtonLoop._create_rule_table: [C, N, E, S, W, new_state], in definition order.
-export const LANGTON_RULES = [
+// SimplifiedLangtonLoop._create_rule_table: [C, N, E, S, W, new_state]. First the 12 hand-written rules, then the
+// generalised families (_generalised_rule) for every (C, N, E, S, W) over states 0-2, in itertools.product order.
+const ORIGINAL_RULES = [
   [0, 1, 1, 1, 0, 1], [0, 1, 1, 0, 1, 1], [0, 1, 0, 1, 1, 1], [0, 0, 1, 1, 1, 1],   // extend sheath
   [2, 2, 0, 0, 0, 2], [2, 0, 2, 0, 0, 2], [2, 0, 0, 2, 0, 2], [2, 0, 0, 0, 2, 2],   // signal propagation
   [0, 2, 1, 0, 0, 1], [0, 0, 2, 1, 0, 1], [0, 0, 0, 2, 1, 1], [0, 1, 0, 0, 2, 1],   // growth signals
 ];
+function generalisedRule(c, nb) {
+  const sheath = nb.filter(v => v === 1).length, data = nb.filter(v => v === 2).length;
+  if (c === 0 && data === 0 && sheath === 3) return 1;   // extend sheath
+  if (c === 0 && data === 1 && sheath === 1) return 1;   // growth: sheath wraps the arm
+  if (c === 0 && data === 1 && sheath === 0) return 2;   // propagation: the arm tip advances
+  if (c === 2 && data === 1 && sheath === 0) return 2;   // (original signal family, all arrangements)
+  if (c === 1 && data === 1 && nb[(nb.indexOf(2) + 2) % 4] === 0) return 2;   // arm opening through the sheath
+  return null;
+}
+export const LANGTON_RULES = (() => {
+  const out = ORIGINAL_RULES.map(r => [...r]), seen = new Set(out.map(r => r.slice(0, 5).join()));
+  for (let k = 0; k < 3 ** 5; k++) {
+    const key = [4, 3, 2, 1, 0].map(p => Math.floor(k / 3 ** p) % 3);
+    const v = generalisedRule(key[0], key.slice(1));
+    if (v !== null && !seen.has(key.join())) out.push([...key, v]);
+  }
+  return out;
+})();
 
 // GameOfLifeReplicator._initialize_glider_gun: gun_pattern, written with its top-left corner at (10, 10).
 export const GUN = [

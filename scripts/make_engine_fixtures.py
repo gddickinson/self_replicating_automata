@@ -27,7 +27,7 @@ from web.grid_codec import encode  # noqa: E402
 OUT = ROOT / "tests" / "fixtures" / "engine_fixtures.json"
 BRAIN_SEEDS, BRAIN_SIZES = (0, 1, 42), (50, 100)
 RUN_SIZE = 50
-RUN_STEPS = {"langton_loop": 10, "brians_brain": 40, "game_of_life": 120, "wireworld": 60}
+RUN_STEPS = {"langton_loop": 40, "brians_brain": 40, "game_of_life": 120, "wireworld": 60}
 SOUP, SOUP_STEPS = 24, 12
 
 

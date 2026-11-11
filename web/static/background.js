@@ -30,9 +30,10 @@ route('background', () => {
     <tbody>
       <tr><td>Langton's self-replicating loop</td><td>A simplified version of von Neumann's idea using only 8 states: a closed
         loop that extends an "arm" to replicate. Published in 1984.</td>
-        <td><a href="#/lab/langton_loop"><code>SimplifiedLangtonLoop</code></a>: 8 states, a reduced table of 12 rules
-        (not Langton's full table; the ROADMAP lists "implement a true Langton Loop with the full 219-rule transition
-        table" as future work).</td></tr>
+        <td><a href="#/lab/langton_loop"><code>SimplifiedLangtonLoop</code></a>: 8 states (only 0-2 used), 12 hand-written rules generalised
+        to every neighbour arrangement plus an arm-opening rule; the loop grows sheathed arms that branch, it does not copy
+        itself (the ROADMAP lists "implement a true Langton Loop with the full 219-rule transition table" as future
+        work).</td></tr>
       <tr><td>Evolving loop (evoloops)</td><td>Based on Sayama's 1999 work: loops that can undergo Darwinian evolution
         through mutation, selection and inheritable variation.</td>
         <td><a href="#/lab/brians_brain"><code>BriansBrain</code></a>, aliased as <code>EvolvingLoop</code> ("Use Brian's
