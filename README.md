@@ -8,20 +8,20 @@ The static site is the working simulator: all four automaton classes and their s
 small JavaScript engine (`web/static/automata_engine.js`, `automata_init.js`) that node tests check, cell for cell,
 against grids computed by the Python code (every constructor pattern at grid sizes 50-300, Brian's Brain with
 `np.random.seed`, runs of up to 120 generations). The lab has play/pause/step/reset, speed in ms per step, grid size,
-drawing and starting grids; the Automata and Background pages are built from the classes and
+drawing, starting grids and Brian's Brain's mutation rate and seed; the Automata and Background pages are built from the classes and
 `README_automata.md`.
 
 ```bash
 pip install -r requirements-web.txt
 python run_web.py                         # local app on http://127.0.0.1:8140 (adds "Check with Python" in the lab)
-python -m pytest -q tests/test_web.py     # API, static build, fixtures, node engine test
+python -m pytest -q tests test_automata.py   # web API, static build, fixtures, node test, regressions
 python scripts/build_static.py            # export the static site to site/
 python scripts/make_engine_fixtures.py    # regenerate tests/fixtures/engine_fixtures.json
 ```
 
-| Home | Lab (Game of Life) | Lab (Wire World) | Automata |
-|---|---|---|---|
-| ![Home](docs/img/home.png) | ![Lab](docs/img/lab_game_of_life.png) | ![Wire World](docs/img/lab_wireworld.png) | ![Automata](docs/img/automata.png) |
+| Home | Lab (Game of Life) | Lab (Wire World) | Lab (Simple Loop) | Automata |
+|---|---|---|---|---|
+| ![Home](docs/img/home.png) | ![Lab](docs/img/lab_game_of_life.png) | ![Wire World](docs/img/lab_wireworld.png) | ![Simple Loop](docs/img/lab_langton_loop.png) | ![Automata](docs/img/automata.png) |
 
 ---
 

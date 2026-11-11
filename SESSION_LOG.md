@@ -24,3 +24,28 @@
     neither exists. README.md lists four snapshot PNGs that are not in the repo.
   - `WireWorld(w, h)` with w or h below 49 raises IndexError (the 25-cell branches are not bounds-checked). The GUIs'
     slider starts at 50; the web lab offers 50-300 only.
+
+## 2026-11-11 -- Bug fixes approved by George (branch `web-interface`, after the web merge)
+One commit per fix, each with regression tests in `tests/test_regressions.py` that failed first:
+1. Desktop GUI colours: `automata_colors.colormap_and_norm()` (ListedColormap + BoundaryNorm) replaces
+   `imshow(vmin, vmax)` in both GUIs and `automaton_diagnostic.py`; state i = colour i, Langton's sheath is white.
+   Web lab's "desktop colours" switch removed.
+2. `SimplifiedLangtonLoop`: the 12 rules are kept and each family generalised to every neighbour arrangement over
+   states 0-2 (`_generalised_rule`), plus an arm-opening rule (sheath with one data neighbour and empty space opposite
+   -> data). The default loop now grows sheathed arms north and south that branch and fill the grid (40 rules). This
+   is a design choice made to give the rules' stated intent ("extension", "propagation", "growth") something to act
+   on; it does not make a true self-copying Langton loop (still ROADMAP work).
+3. `BriansBrain(mutation_rate, seed)`: after each step each cell, with probability `mutation_rate`, gets a random
+   state from the automaton's own `np.random.RandomState(seed)`; rate 0 draws nothing; rates outside [0, 1] raise.
+   The interactive GUI shows its mutation slider for Brian's Brain (desktop GUIs default to 0.001, so mutations are
+   now on by default there).
+4. Docs (README_automata, README, GUI_GUIDE, Tk GUI labels/info) say EvolvingLoop = Brian's Brain with optional
+   mutations and VonNeumannConstructor = Game of Life with Gosper's glider gun.
+5. `WireWorld` initial cells go through `_set()` (bounds-checked): grids below 49 cells work; unchanged at 50-300.
+6. README_automata's AutomatonVisualizer/CLI menu replaced by real usage; README.md's 4 missing PNGs replaced by
+   `docs/img/` and `diagnostics/`.
+7. `.DS_Store` untracked (.gitignore already covered it).
+- JS engine updated (generated Langton table, RandomState `random_sample`/`randint` mutations, bounds-checked
+  WireWorld init); fixtures regenerated (29 initial grids incl. WireWorld 5-45, 15 run cases incl. mutations);
+  `/api/run` takes `mutation_rate`/`seed`; lab has a mutation slider. CI now runs `pytest tests test_automata.py`.
+- Note: `diagnostics/` still holds the 2025-12-21 report/PNGs made with the old rules and colours.

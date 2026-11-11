@@ -23,4 +23,4 @@ When directing Claude Code on this codebase, follow the global rules above, pref
 
 `web/` (FastAPI app + static front end, also the GitHub Pages site) is mapped in `INTERFACE.md` ("Web Interface").
 The JS engine must match the Python classes cell for cell: after changing an automaton, run
-`python scripts/make_engine_fixtures.py` and `python -m pytest -q tests/test_web.py`.
+`python scripts/make_engine_fixtures.py` and `python -m pytest -q tests test_automata.py`.
